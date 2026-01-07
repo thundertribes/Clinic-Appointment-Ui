@@ -1,84 +1,120 @@
-﻿"use client";
+"use client";
 
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-//import { User } from '@/type';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 
-// Defines the Shape of your user object for TypeScript
+/* =======================
+   Types
+======================= */
+
 interface User {
-    internal_user_id: number;
-    client_id: number;
-    name: string;
-    email: string;
-    role: string;
-    phoneNumber: string;
-    location: string;
-    is_active: boolean;
-    created_at: string;
-    department: string;
-    twoFactorEnabled: boolean;
-    lastPasswordChangeDate: string | null;
+  internal_user_id: number;
+  client_id: number;
+  name: string;
+  email: string;
+  role: string;
+  phoneNumber: string;
+  location: string;
+  is_active: boolean;
+  created_at: string;
+  department: string;
+  twoFactorEnabled: boolean;
+  lastPasswordChangeDate: string | null;
 }
 
-// Shape of the data and functions our context will provide
+ interface AuthUser {
+  id: string;
+  username: string;
+  role: string;
+  clinicId: string;
+}
+
+
 interface AuthContextType {
-    user: User | null;
-    token: string | null;
-    login: (userData: User, userToken: string) => void;
-    logout: () => void;
-    refreshUser: (newUserData: User) => void;
+  user: AuthUser | null;
+  loading: boolean;
+  setUser: (user: AuthUser | null) => void;
+  logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
-// Create the context with a default value of null
+
+
+
+/* =======================
+   Context
+======================= */
+
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
+/* =======================
+   Provider
+======================= */
 
-    const login = (userData: User, userToken: string) => {
-        setUser(userData);
-        setToken(userToken);
-        localStorage.setItem('authToken', userToken);
-        localStorage.setItem('user', JSON.stringify(userData));
-    };
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    const logout = () => {
+  // Fetch user from server cookie
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("/api/auth/me", {
+        credentials: "include",
+      });
+
+      if (!res.ok) {
         setUser(null);
-        setToken(null);
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
-    };
-    const refreshUser = (newUserData: User) => {
-        setUser(newUserData);
-        localStorage.setItem('user', JSON.stringify(newUserData));
-    };
+        return;
+      }
 
-    // This checks if a user was already logged in when the app loads
-    useEffect(() => {
-        try {
-            const storedToken = localStorage.getItem('authToken');
-            const storedUser = localStorage.getItem('user');
-            if (storedToken && storedUser) {
-                setToken(storedToken);
-                setUser(JSON.parse(storedUser));
-            }
-        } catch (error) {
-            console.error("Failed to load user from localStorage", error);
-        }
-    }, []);
-
-    return (
-        <AuthContext.Provider value={{ user, token, login, logout, refreshUser }}>
-            {children}
-        </AuthContext.Provider>
-    );
-};
-
-// Create a custom hook to make it easy for components to use the context
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
+      const data = await res.json();
+      setUser(data.user);
+    } catch {
+      setUser(null);
     }
-    return context;
-};
+  };
+
+  useEffect(() => {
+    fetchUser().finally(() => setLoading(false));
+  }, []);
+
+  const logout = async () => {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+    setUser(null);
+  };
+
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        logout,
+        setUser,
+        refreshUser: fetchUser,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+/* =======================
+   Hook
+======================= */
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
+  return context;
+}

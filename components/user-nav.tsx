@@ -29,7 +29,7 @@ const handleLogout = () => {
             {user && (
                 <Avatar className="h-8 w-8">
                 <AvatarImage src="/placeholder-user.jpg" alt="{user.name}" />
-                <AvatarFallback>{user.name.replace(/^Dr\.\s*/, '').split(' ')
+                <AvatarFallback>{user.username.replace(/^Dr\.\s*/, '').split(' ')
                     .map((n) => n[0]).slice(0, 2).join('')}
                 </AvatarFallback>
                 </Avatar>
@@ -40,10 +40,10 @@ const handleLogout = () => {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
             {user && (
-                <p className="text-sm font-medium leading-none">{user.name}</p>
+                <p className="text-sm font-medium leading-none">{user.username}</p>
             )}
             {user && (
-                <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                <p className="text-xs leading-none text-muted-foreground">{user.username}</p>
             )}
             </div>
           </DropdownMenuLabel>

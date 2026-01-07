@@ -15,40 +15,43 @@ import { useAuth } from "@/context/AuthContext";
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [email, setEmail] = useState<string>("")
+  const [username, setUsername] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const { login } = useAuth();
+const { setUser } = useAuth();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
-        setError(null)
 
-        try {
-            const res = await fetch("http://localhost:5150/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email, password
-                }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                login(data.user, data.token);
-                router.push("/");
-            } else {
-                setError(data.message || "Invalid Credentials");
-            }
-        } catch (err) {
-            setError("Server error,Try Again");
-        } finally {
-            setIsLoading(false);
-        }
-    };  
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.message || "Invalid credentials");
+      return;
+    }
+
+    // ✅ hydrate user immediately
+    setUser(data.user);
+
+    router.push("/");
+  } catch {
+    setError("Server error. Try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-950 px-4 py-12">
@@ -67,17 +70,17 @@ export default function LoginPage() {
             <CardContent className="space-y-4">
               {error && <div className="rounded-md bg-red-900/20 p-3 text-sm text-red-400">{error}</div>}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-300">
-                  Email
+                <Label htmlFor="username" className="text-gray-300">
+                  Username
                 </Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                   <Input
-                    id="email"
-                    type="email"
+                    id="username"
+                    type="text"
                     placeholder="name@clinic.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="border-gray-800 bg-gray-800 pl-10 text-white placeholder:text-gray-500"
                     required
                   />
