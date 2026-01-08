@@ -27,12 +27,14 @@ interface User {
   lastPasswordChangeDate: string | null;
 }
 
- interface AuthUser {
-  id: string;
-  username: string;
-  role: string;
+interface AuthUser {
+  userId: string;
   clinicId: string;
+  role: "RECEPTIONIST" | "DOCTOR" | "ADMIN";
+  iat: number;
+  exp: number;
 }
+
 
 
 interface AuthContextType {
@@ -61,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   // Fetch user from server cookie
-  const fetchUser = async () => {
+ const fetchUser = async () => {
     try {
       const res = await fetch("/api/auth/me", {
         credentials: "include",
@@ -72,8 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const data = await res.json();
-      setUser(data.user);
+      const json = await res.json();
+      setUser(json.data);
     } catch {
       setUser(null);
     }
@@ -82,6 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     fetchUser().finally(() => setLoading(false));
   }, []);
+
 
   const logout = async () => {
     await fetch("/api/auth/logout", {

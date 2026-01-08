@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export function UserNav() {
 const { user } = useAuth();
+console.log('user obj', user);
 const { logout } = useAuth();
 const router = useRouter();
 
@@ -29,7 +30,7 @@ const handleLogout = () => {
             {user && (
                 <Avatar className="h-8 w-8">
                 <AvatarImage src="/placeholder-user.jpg" alt="{user.name}" />
-                <AvatarFallback>{user.username.replace(/^Dr\.\s*/, '').split(' ')
+                <AvatarFallback>{user.role.replace(/^Dr\.\s*/, '').split(' ')
                     .map((n) => n[0]).slice(0, 2).join('')}
                 </AvatarFallback>
                 </Avatar>
@@ -40,10 +41,10 @@ const handleLogout = () => {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
             {user && (
-                <p className="text-sm font-medium leading-none">{user.username}</p>
+                <p className="text-sm font-medium leading-none">{user.role}</p>
             )}
             {user && (
-                <p className="text-xs leading-none text-muted-foreground">{user.username}</p>
+                <p className="text-xs leading-none text-muted-foreground">{user.role}</p>
             )}
             </div>
           </DropdownMenuLabel>

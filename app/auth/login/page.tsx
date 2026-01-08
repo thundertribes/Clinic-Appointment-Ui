@@ -19,7 +19,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-const { setUser } = useAuth();
+const { refreshUser } = useAuth();
+
 
 
 const handleSubmit = async (e: React.FormEvent) => {
@@ -30,7 +31,10 @@ const handleSubmit = async (e: React.FormEvent) => {
   try {
     const res = await fetch("/api/auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // REQUIRED
       body: JSON.stringify({ username, password }),
     });
 
@@ -41,9 +45,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       return;
     }
 
-    // ✅ hydrate user immediately
-    setUser(data.user);
-
+    await refreshUser(); // fetches /api/auth/me
     router.push("/");
   } catch {
     setError("Server error. Try again.");
