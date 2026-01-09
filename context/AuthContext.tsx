@@ -23,8 +23,8 @@ interface User {
   is_active: boolean;
   created_at: string;
   department: string;
-  twoFactorEnabled: boolean;
-  lastPasswordChangeDate: string | null;
+  // twoFactorEnabled: boolean;
+  // lastPasswordChangeDate: string | null;
 }
 
 interface AuthUser {
