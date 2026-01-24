@@ -1,290 +1,482 @@
 "use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { use, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect, FormEvent, use } from "react";
+
+// Type definitions
+interface Doctor {
+  id: string;
+  name: string;
+  designation: string;
+}
+
+interface PatientFormData {
+  firstName: string;
+  lastName: string;
+  age: string;
+  gender: string;
+  phoneNumber: string;
+  doctorId: string;
+  email: string;
+  bloodType: string;
+  heightCm: string;
+  weightKg: string;
+}
+
+interface Patient {
+  id: string;
+  publicId: string;
+  firstName: string;
+  lastName: string;
+  age: number;
+  gender: string;
+  phoneNumber: string;
+  doctor: {
+    id: string;
+    name: string;
+  };
+  email?: string;
+  bloodType?: string;
+  heightCm?: number;
+  weightKg?: number;
+}
+
+const initialFormData: PatientFormData = {
+  firstName: '',
+  lastName: '',
+  age: '',
+  gender: '',
+  phoneNumber: '',
+  doctorId: '',
+  email: '',
+  bloodType: '',
+  heightCm: '',
+  weightKg: '',
+};
 
 export default function PatientEditPage({ params }: { params: Promise<{ id: string }> }) {
-  const [dob, setDob] = useState<Date | undefined>(new Date());
-  // In a real app, you would fetch the patient data based on the ID
-  const { id } = use(params);
-  const patientId = id;
+  const { id: patientId } = use(params);
+  const router = useRouter();
+
+  const [formData, setFormData] = useState<PatientFormData>(initialFormData);
+  const [originalData, setOriginalData] = useState<PatientFormData>(initialFormData);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDoctorsLoading, setIsDoctorsLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // Check if form has changes (dirty state)
+  const isDirty = JSON.stringify(formData) !== JSON.stringify(originalData);
+
+  // Fetch patient data
+  useEffect(() => {
+    const fetchPatient = async () => {
+      try {
+        const response = await fetch(`/api/patients/${patientId}`);
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            const patient: Patient = result.data;
+            const patientFormData: PatientFormData = {
+              firstName: patient.firstName || '',
+              lastName: patient.lastName || '',
+              age: patient.age?.toString() || '',
+              gender: patient.gender || '',
+              phoneNumber: patient.phoneNumber || '',
+              doctorId: patient.doctor?.id || '',
+              email: patient.email || '',
+              bloodType: patient.bloodType || '',
+              heightCm: patient.heightCm?.toString() || '',
+              weightKg: patient.weightKg?.toString() || '',
+            };
+            setFormData(patientFormData);
+            setOriginalData(patientFormData);
+          }
+        } else {
+          setError('Failed to load patient data.');
+        }
+      } catch (err) {
+        console.error('Failed to fetch patient:', err);
+        setError('Failed to load patient data.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPatient();
+  }, [patientId]);
+
+  // Fetch doctors list
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await fetch('/api/doctors');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            setDoctors(result.data);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch doctors:', err);
+      } finally {
+        setIsDoctorsLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSelectChange = (name: keyof PatientFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const validateForm = (): string | null => {
+    const trimmedFirstName = formData.firstName.trim();
+    const trimmedLastName = formData.lastName.trim();
+    const trimmedPhone = formData.phoneNumber.trim();
+    const age = parseInt(formData.age || '0', 10);
+
+    if (!trimmedFirstName) {
+      return 'First name is required.';
+    }
+    if (trimmedFirstName.length < 2) {
+      return 'First name must be at least 2 characters.';
+    }
+
+    if (!trimmedLastName) {
+      return 'Last name is required.';
+    }
+    if (trimmedLastName.length < 2) {
+      return 'Last name must be at least 2 characters.';
+    }
+
+    if (!formData.age) {
+      return 'Age is required.';
+    }
+    if (isNaN(age) || age < 0 || age > 150) {
+      return 'Please enter a valid age (0-150).';
+    }
+
+    if (!formData.gender) {
+      return 'Gender is required.';
+    }
+
+    if (!trimmedPhone) {
+      return 'Phone number is required.';
+    }
+    if (trimmedPhone.length < 10) {
+      return 'Please enter a valid phone number (at least 10 digits).';
+    }
+
+    if (!formData.doctorId) {
+      return 'Please select a doctor.';
+    }
+
+    // Validate email format if provided
+    if (formData.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email.trim())) {
+        return 'Please enter a valid email address.';
+      }
+    }
+
+    return null;
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      // Build payload matching backend expectations
+      const payload: Record<string, unknown> = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        age: parseInt(formData.age, 10),
+        gender: formData.gender.toUpperCase(),
+        phoneNumber: formData.phoneNumber.trim(),
+        doctorId: formData.doctorId,
+      };
+
+      // Optional fields - only include if they have values
+      if (formData.email.trim()) {
+        payload.email = formData.email.trim();
+      }
+      if (formData.bloodType) {
+        payload.bloodType = formData.bloodType;
+      }
+      if (formData.heightCm) {
+        payload.heightCm = parseFloat(formData.heightCm);
+      }
+      if (formData.weightKg) {
+        payload.weightKg = parseFloat(formData.weightKg);
+      }
+
+      const response = await fetch(`/api/patients/${patientId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('You are not authorized to perform this action.');
+        }
+        const result = await response.json();
+        const errorMessages = result.errors
+          ? Object.values(result.errors).flat().join(' ')
+          : result.message || 'Failed to update patient.';
+        throw new Error(errorMessages);
+      }
+
+      router.push(`/patients/${patientId}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4 flex-wrap">
         <Button variant="outline" size="icon" asChild>
-          <Link href="/patients">
+          <Link href={`/patients/${patientId}`}>
             <ArrowLeft className="h-4 w-4" />
             <span className="sr-only">Back</span>
           </Link>
         </Button>
-        <h1 className="text-2xl lg:text-3xl font-bold tracking-tight mb-2">Edit Patient</h1>
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-bold tracking-tight mb-2">Edit Patient</h1>
+          <p className="text-muted-foreground">Update patient information.</p>
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="w-full md:w-1/4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Patient Profile</CardTitle>
-              <CardDescription>Update the patient's profile picture and status</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col items-center gap-4">
-              <Avatar className="h-32 w-32">
-                <AvatarImage src="/user-3.png" alt="Patient" />
-                <AvatarFallback>PT</AvatarFallback>
-              </Avatar>
-              <Button variant="outline" className="w-full">
-                Change Photo
-              </Button>
-
-              <div className="w-full space-y-2 pt-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="patient-status">Patient Status</Label>
-                  <Switch id="patient-status" defaultChecked />
+      <form onSubmit={handleSubmit}>
+        <Card>
+          <CardHeader>
+            <CardTitle>Patient Information</CardTitle>
+            <CardDescription>Update the patient's personal and medical details.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Personal Information Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Personal Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    placeholder="Enter first name"
+                  />
                 </div>
-                <p className="text-sm text-muted-foreground">Active patients can book appointments and receive care.</p>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last Name <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    placeholder="Enter last name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="age">Age <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="age"
+                    name="age"
+                    type="number"
+                    value={formData.age}
+                    onChange={handleChange}
+                    placeholder="Enter age"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="gender">Gender <span className="text-red-500">*</span></Label>
+                  <Select
+                    value={formData.gender}
+                    onValueChange={(value) => handleSelectChange('gender', value)}
+                  >
+                    <SelectTrigger id="gender">
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="MALE">Male</SelectItem>
+                      <SelectItem value="FEMALE">Female</SelectItem>
+                      <SelectItem value="OTHER">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
 
-        <div className="w-full md:w-3/4">
-          <Tabs defaultValue="personal">
-            <TabsList>
-              <TabsTrigger value="personal">Personal Information</TabsTrigger>
-              <TabsTrigger value="medical">Medical Information</TabsTrigger>
-              <TabsTrigger value="insurance">Insurance & Billing</TabsTrigger>
-            </TabsList>
+            <Separator />
 
-            <TabsContent value="personal" className="space-y-4 pt-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Personal Details</CardTitle>
-                  <CardDescription>Update the patient's personal information</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="first-name">First Name</Label>
-                      <Input id="first-name" defaultValue="John" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="last-name">Last Name</Label>
-                      <Input id="last-name" defaultValue="Smith" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="dob">Date of Birth</Label>
-                      <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className={`w-full justify-start text-left font-normal `}>
-                          <span>{dob ? dob.toDateString() : "Pick a date"}</span>
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar mode="single" selected={dob} onSelect={setDob} />
-                      </PopoverContent>
-                    </Popover>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="gender">Gender</Label>
-                      <Select defaultValue="male">
-                        <SelectTrigger id="gender">
-                          <SelectValue placeholder="Select gender" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="male">Male</SelectItem>
-                          <SelectItem value="female">Female</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" defaultValue="john.smith@example.com" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input id="phone" defaultValue="+1 (555) 123-4567" />
-                    </div>
-                  </div>
+            {/* Contact Information Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Contact Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phoneNumber">Phone Number <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    placeholder="Enter phone number"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email (Optional)</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Enter email address"
+                  />
+                </div>
+              </div>
+            </div>
 
-                  <Separator />
+            <Separator />
 
-                  <div className="space-y-2">
-                    <Label htmlFor="address">Address</Label>
-                    <Textarea id="address" defaultValue="123 Main Street, Apt 4B" />
-                  </div>
+            {/* Assigned Doctor Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Assigned Doctor</h3>
+              <div className="space-y-2">
+                <Label htmlFor="doctorId">Select Doctor <span className="text-red-500">*</span></Label>
+                <Select
+                  value={formData.doctorId}
+                  onValueChange={(value) => handleSelectChange('doctorId', value)}
+                  disabled={isDoctorsLoading}
+                >
+                  <SelectTrigger id="doctorId">
+                    <SelectValue placeholder={isDoctorsLoading ? "Loading doctors..." : "Select a doctor"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {doctors.map((doctor) => (
+                      <SelectItem key={doctor.id} value={doctor.id}>
+                        {doctor.name} - {doctor.designation}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="city">City</Label>
-                      <Input id="city" defaultValue="New York" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="state">State</Label>
-                      <Input id="state" defaultValue="NY" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="zip">Zip Code</Label>
-                      <Input id="zip" defaultValue="10001" />
-                    </div>
-                  </div>
+            <Separator />
 
-                  <div className="space-y-2">
-                    <Label htmlFor="emergency-contact">Emergency Contact</Label>
-                    <Input id="emergency-contact" defaultValue="Sarah Smith (Wife) - +1 (555) 987-6543" />
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+            {/* Medical Information Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Medical Information (Optional)</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="bloodType">Blood Type</Label>
+                  <Select
+                    value={formData.bloodType}
+                    onValueChange={(value) => handleSelectChange('bloodType', value)}
+                  >
+                    <SelectTrigger id="bloodType">
+                      <SelectValue placeholder="Select blood type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="A+">A+</SelectItem>
+                      <SelectItem value="A-">A-</SelectItem>
+                      <SelectItem value="B+">B+</SelectItem>
+                      <SelectItem value="B-">B-</SelectItem>
+                      <SelectItem value="AB+">AB+</SelectItem>
+                      <SelectItem value="AB-">AB-</SelectItem>
+                      <SelectItem value="O+">O+</SelectItem>
+                      <SelectItem value="O-">O-</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="heightCm">Height (cm)</Label>
+                  <Input
+                    id="heightCm"
+                    name="heightCm"
+                    type="number"
+                    value={formData.heightCm}
+                    onChange={handleChange}
+                    placeholder="Enter height"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="weightKg">Weight (kg)</Label>
+                  <Input
+                    id="weightKg"
+                    name="weightKg"
+                    type="number"
+                    value={formData.weightKg}
+                    onChange={handleChange}
+                    placeholder="Enter weight"
+                  />
+                </div>
+              </div>
+            </div>
 
-            <TabsContent value="medical" className="space-y-4 pt-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Medical Information</CardTitle>
-                  <CardDescription>Update the patient's medical details</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="blood-type">Blood Type</Label>
-                    <Select defaultValue="a_positive">
-                      <SelectTrigger id="blood-type">
-                        <SelectValue placeholder="Select blood type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="a_positive">A+</SelectItem>
-                        <SelectItem value="a_negative">A-</SelectItem>
-                        <SelectItem value="b_positive">B+</SelectItem>
-                        <SelectItem value="b_negative">B-</SelectItem>
-                        <SelectItem value="ab_positive">AB+</SelectItem>
-                        <SelectItem value="ab_negative">AB-</SelectItem>
-                        <SelectItem value="o_positive">O+</SelectItem>
-                        <SelectItem value="o_negative">O-</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+            {error && <p className="text-red-500 text-center py-4">{error}</p>}
 
-                  <div className="space-y-2">
-                    <Label htmlFor="height">Height (cm)</Label>
-                    <Input id="height" type="number" defaultValue="178" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="weight">Weight (kg)</Label>
-                    <Input id="weight" type="number" defaultValue="82" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="allergies">Allergies</Label>
-                    <Textarea id="allergies" defaultValue="Penicillin, Peanuts" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="chronic-conditions">Chronic Conditions</Label>
-                    <Textarea id="chronic-conditions" defaultValue="Hypertension, Type 2 Diabetes" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="current-medications">Current Medications</Label>
-                    <Textarea id="current-medications" defaultValue="Lisinopril 10mg daily, Metformin 500mg twice daily" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Smoking Status</Label>
-                    <RadioGroup defaultValue="former">
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="never" id="never" />
-                        <Label htmlFor="never">Never Smoked</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="former" id="former" />
-                        <Label htmlFor="former">Former Smoker</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="current" id="current" />
-                        <Label htmlFor="current">Current Smoker</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="insurance" className="space-y-4 pt-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Insurance Information</CardTitle>
-                  <CardDescription>Update the patient's insurance details</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="insurance-provider">Insurance Provider</Label>
-                      <Input id="insurance-provider" defaultValue="Blue Cross Blue Shield" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="policy-number">Policy Number</Label>
-                      <Input id="policy-number" defaultValue="XYZ123456789" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="group-number">Group Number</Label>
-                      <Input id="group-number" defaultValue="GRP987654" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="policy-holder">Policy Holder</Label>
-                      <Input id="policy-holder" defaultValue="John Smith" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="insurance-notes">Additional Notes</Label>
-                    <Textarea id="insurance-notes" defaultValue="Co-pay: $25 for primary care, $40 for specialists" />
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-2">
-                    <Label>Billing Preferences</Label>
-                    <RadioGroup defaultValue="insurance">
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="insurance" id="insurance" />
-                        <Label htmlFor="insurance">Bill Insurance First</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="self" id="self" />
-                        <Label htmlFor="self">Self-Pay</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-
-          <div className="flex justify-end mt-6 gap-2">
-            <Button variant="outline" asChild>
-              <Link href={`/patients/${patientId}`}>Cancel</Link>
-            </Button>
-            <Button>
-              <Save className="mr-2 h-4 w-4" />
-              Save Changes
-            </Button>
-          </div>
-        </div>
-      </div>
+            <div className="flex justify-end gap-4 pt-4">
+              <Button type="button" variant="outline" asChild>
+                <Link href={`/patients/${patientId}`}>Cancel</Link>
+              </Button>
+              <Button type="submit" disabled={!isDirty || isSaving}>
+                {isSaving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </form>
     </div>
   );
 }

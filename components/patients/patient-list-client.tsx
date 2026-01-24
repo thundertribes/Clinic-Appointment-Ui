@@ -15,7 +15,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -415,16 +414,6 @@ export function PatientListClient({
                             <DropdownMenuItem asChild>
                               <Link href={`/patients/${patient.id}/edit`}>
                                 Edit details
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link href={`/patients/${patient.id}/history`}>
-                                Medical history
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link href={`/patients/${patient.id}/prescriptions`}>
-                                Prescriptions
                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />

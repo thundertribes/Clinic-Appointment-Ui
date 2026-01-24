@@ -3,8 +3,11 @@ import { cookies } from "next/headers";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
-// GET /api/patients - Fetch all patients
-export async function GET() {
+// GET /api/patients/[id] - Fetch a single patient by ID
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     if (!BACKEND_URL) {
       return NextResponse.json(
@@ -12,6 +15,8 @@ export async function GET() {
         { status: 500 }
       );
     }
+
+    const { id } = await params;
 
     // Get token from cookies
     const cookieStore = await cookies();
@@ -24,14 +29,13 @@ export async function GET() {
       );
     }
 
-    // Call backend to get patients
-    const backendRes = await fetch(`${BACKEND_URL}/patients`, {
+    // Call backend to get patient by ID
+    const backendRes = await fetch(`${BACKEND_URL}/patients/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      // Important: Don't cache on server for fresh data
       cache: "no-store",
     });
 
@@ -43,7 +47,7 @@ export async function GET() {
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    console.error("GET PATIENTS ERROR:", error);
+    console.error("GET PATIENT BY ID ERROR:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
@@ -51,8 +55,11 @@ export async function GET() {
   }
 }
 
-// POST /api/patients - Create a new patient
-export async function POST(request: NextRequest) {
+// PATCH /api/patients/[id] - Update a patient by ID
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     if (!BACKEND_URL) {
       return NextResponse.json(
@@ -60,6 +67,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    const { id } = await params;
 
     // Get token from cookies
     const cookieStore = await cookies();
@@ -75,9 +84,9 @@ export async function POST(request: NextRequest) {
     // Get request body
     const body = await request.json();
 
-    // Call backend to create patient
-    const backendRes = await fetch(`${BACKEND_URL}/patients`, {
-      method: "POST",
+    // Call backend to update patient
+    const backendRes = await fetch(`${BACKEND_URL}/patients/${id}`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -91,9 +100,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(data, { status: backendRes.status });
     }
 
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    console.error("POST PATIENT ERROR:", error);
+    console.error("PATCH PATIENT ERROR:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }

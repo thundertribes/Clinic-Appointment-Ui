@@ -200,9 +200,9 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       icon: Settings,
       submenu: [
         { title: "General Settings", href: "/settings" },
-        { title: "Notifications", href: "/settings/notifications" },
+        // { title: "Notifications", href: "/settings/notifications" },
         { title: "Working Hours", href: "/settings/hours" },
-        { title: "Integrations", href: "/settings/integrations" },
+        // { title: "Integrations", href: "/settings/integrations" },
       ],
     },
     {
@@ -242,11 +242,11 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     //  href: "/chat",
     //  icon: MessageCircle,
     //},
-    {
-      title: "Support",
-      href: "/support",
-      icon: HelpCircle,
-    },
+    // {
+    //   title: "Support",
+    //   href: "/support",
+    //   icon: HelpCircle,
+    // },
     //{
     //  title: "Widgets",
     //  href: "/widgets",
