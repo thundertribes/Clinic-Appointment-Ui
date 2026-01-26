@@ -3,6 +3,7 @@
 import type React from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // UI Components
 import {
@@ -46,7 +47,7 @@ import {
 } from "@/components/ui/table";
 
 // Icons
-import { Download, Filter, MoreHorizontal, Plus, Search, X } from "lucide-react";
+import { Download, Filter, Loader2, MoreHorizontal, Plus, Search, X } from "lucide-react";
 
 // Types
 import type { Patient, PatientFilterOptions, FilterState } from "@/types/patient";
@@ -61,10 +62,13 @@ export function PatientListClient({
   initialPatients,
   filterOptions,
 }: PatientListClientProps) {
+  const router = useRouter();
+
   // ==================== STATE ====================
 
   // Filter state
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Filtered patients (derived from initialPatients + filters)
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>(initialPatients);
@@ -155,11 +159,28 @@ export function PatientListClient({
   const handleDeleteConfirm = async () => {
     if (!patientToDelete) return;
 
-    // TODO: Implement delete API call
-    console.log("Deleting patient:", patientToDelete);
+    setIsDeleting(true);
 
-    setDeleteDialogOpen(false);
-    setPatientToDelete(null);
+    try {
+      const response = await fetch(`/api/patients/${patientToDelete}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setDeleteDialogOpen(false);
+        setPatientToDelete(null);
+        // Force refresh the page to load updated list
+        router.refresh();
+      } else {
+        const result = await response.json();
+        console.error("Failed to delete patient:", result.message);
+      }
+    } catch (error) {
+      console.error("Error deleting patient:", error);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   // ==================== RENDER ====================
@@ -448,12 +469,20 @@ export function PatientListClient({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
+              disabled={isDeleting}
               className="bg-red-500 text-neutral-50 hover:bg-red-700"
             >
-              Delete
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

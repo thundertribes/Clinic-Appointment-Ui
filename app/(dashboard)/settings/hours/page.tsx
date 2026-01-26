@@ -18,6 +18,17 @@ import type { DaySchedule } from "@/types/schedule";
 import type { ClinicException } from "@/types/exceptions";
 import { format } from "date-fns";
 
+// Type for clinic break
+interface ClinicBreak {
+  id: string;
+  clinicId: string;
+  dayOfWeek: number;
+  dayName: string;
+  startTime: string;
+  endTime: string;
+  reason: string;
+}
+
 // Day mapping for the UI
 const DAYS = [
   { id: 1, name: "Monday" },
@@ -43,6 +54,10 @@ export default function WorkingHoursPage() {
   const [exceptions, setExceptions] = useState<ClinicException[]>([]);
   const [isLoadingExceptions, setIsLoadingExceptions] = useState(true);
 
+  // Breaks state
+  const [breaks, setBreaks] = useState<ClinicBreak[]>([]);
+  const [isLoadingBreaks, setIsLoadingBreaks] = useState(true);
+
   // UI state for new exception forms
   const [newSpecialHour, setNewSpecialHour] = useState({
     date: new Date(),
@@ -55,10 +70,11 @@ export default function WorkingHoursPage() {
     reason: "",
   });
 
-  // Fetch schedule and exceptions on mount
+  // Fetch schedule, exceptions, and breaks on mount
   useEffect(() => {
     fetchSchedule();
     fetchExceptions();
+    fetchBreaks();
   }, []);
 
   const fetchSchedule = async () => {
@@ -184,6 +200,46 @@ export default function WorkingHoursPage() {
       setIsSaving(false);
     }
   };
+
+  // ==================== BREAKS ====================
+
+  // Fetch breaks
+  const fetchBreaks = async () => {
+    try {
+      setIsLoadingBreaks(true);
+      const response = await fetch("/api/clinic/breaks");
+      const data = await response.json();
+
+      if (data.success && data.data) {
+        setBreaks(data.data);
+      } else {
+        toast({
+          title: "Error",
+          description: data.message || "Failed to fetch breaks",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching breaks:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch breaks",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingBreaks(false);
+    }
+  };
+
+  // Group breaks by reason (e.g., "Lunch Break", "Coffee Break")
+  const groupedBreaks = breaks.reduce((acc, breakItem) => {
+    const key = breakItem.reason;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(breakItem);
+    return acc;
+  }, {} as Record<string, ClinicBreak[]>);
 
   // ==================== EXCEPTIONS (HOLIDAYS & SPECIAL HOURS) ====================
 
@@ -494,80 +550,64 @@ export default function WorkingHoursPage() {
         <div className="space-y-6">
 
           {/* Break Timings */}
-          {/* <Card>
+          <Card>
             <CardHeader>
               <CardTitle>Break Times</CardTitle>
-              <CardDescription>Configure daily break times for your clinic</CardDescription>
+              <CardDescription>Daily break times configured for your clinic</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between flex-wrap gap-3">
-                  <Label className="w-24">Lunch Break</Label>
-                  <div className="flex flex-1 items-center space-x-2">
-                    <Select defaultValue="12:00">
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Start time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 13 }, (_, i) => i + 11).map((hour) => (
-                          <SelectItem key={`${hour}:00`} value={`${hour.toString().padStart(2, "0")}:00`}>
-                            {`${hour > 12 ? hour - 12 : hour}:00 ${hour < 12 ? "AM" : "PM"}`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <span className="text-muted-foreground">to</span>
-                    <Select defaultValue="13:00">
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="End time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 13 }, (_, i) => i + 12).map((hour) => (
-                          <SelectItem key={`${hour}:00`} value={`${hour.toString().padStart(2, "0")}:00`}>
-                            {`${hour > 12 ? hour - 12 : hour}:00 ${hour < 12 ? "AM" : "PM"}`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+              {isLoadingBreaks ? (
+                <div className="flex items-center justify-center py-4">
+                  <p className="text-sm text-muted-foreground">Loading breaks...</p>
                 </div>
-                <div className="flex items-center justify-between flex-wrap gap-3">
-                  <Label className="w-24">Coffee Break</Label>
-                  <div className="flex flex-1 items-center space-x-2">
-                    <Select defaultValue="15:00">
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Start time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 13 }, (_, i) => i + 14).map((hour) => (
-                          <SelectItem key={`${hour}:00`} value={`${hour.toString().padStart(2, "0")}:00`}>
-                            {`${hour > 12 ? hour - 12 : hour}:00 ${hour < 12 ? "AM" : "PM"}`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <span className="text-muted-foreground">to</span>
-                    <Select defaultValue="15:30">
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="End time" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 6 }, (_, i) => `${15}:${(i * 10).toString().padStart(2, "0")}`).map((time) => (
-                          <SelectItem key={time} value={time}>
-                            {`${Number.parseInt(time.split(":")[0]) > 12 ? Number.parseInt(time.split(":")[0]) - 12 : Number.parseInt(time.split(":")[0])}:${time.split(":")[1]} PM`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+              ) : Object.keys(groupedBreaks).length === 0 ? (
+                <div className="flex items-center justify-center py-4">
+                  <p className="text-sm text-muted-foreground">No break times configured</p>
                 </div>
-              </div>
-              <Button variant="outline" size="sm" className="mt-2">
+              ) : (
+                <div className="space-y-4">
+                  {Object.entries(groupedBreaks).map(([reason, breakItems]) => (
+                    <div key={reason} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-base font-medium">{reason}</Label>
+                        <span className="text-xs text-muted-foreground">
+                          {breakItems[0].startTime} - {breakItems[0].endTime}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {breakItems
+                          .sort((a, b) => a.dayOfWeek - b.dayOfWeek)
+                          .map((breakItem) => (
+                            <div
+                              key={breakItem.id}
+                              className="flex items-center gap-1 px-3 py-1.5 bg-muted rounded-md text-sm"
+                            >
+                              <span>{breakItem.dayName}</span>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-5 w-5 ml-1"
+                                onClick={() => {
+                                  // Delete functionality placeholder for future implementation
+                                  console.log("Delete break:", breakItem.id);
+                                }}
+                              >
+                                <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                              </Button>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <Separator />
+              <Button variant="outline" size="sm" disabled>
                 <Plus className="mr-2 h-4 w-4" />
                 Add Break Time
               </Button>
             </CardContent>
-          </Card> */}
+          </Card>
 
         {/* SpecialHours and Holidays */}
           <Card>
