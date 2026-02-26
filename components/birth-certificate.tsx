@@ -168,12 +168,8 @@ const BirthCertificate = ({ record, setShowCertificate }: { record: any; setShow
               </div>
             </div>
             <div className="text-center mt-6">
-              <p className="text-sm text-gray-500">
-                Registered on {new Date(record.registrationDate).toLocaleDateString()} in accordance with the Civil Registry Law
-              </p>
-              <p className="text-sm text-gray-500 mt-1">
-                This certificate is an official document and any alteration or falsification is punishable by law
-              </p>
+              <p className="text-sm text-gray-500">Registered on {new Date(record.registrationDate).toLocaleDateString()} in accordance with the Civil Registry Law</p>
+              <p className="text-sm text-gray-500 mt-1">This certificate is an official document and any alteration or falsification is punishable by law</p>
             </div>
           </div>
         </div>
