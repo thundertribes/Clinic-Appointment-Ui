@@ -93,7 +93,7 @@ export default function EditDoctorPage({ params }: { params: Promise<{ id: strin
 
     // Simulate API call
     setTimeout(() => {
-      console.log(values);
+      //console.log(values);
       setIsSubmitting(false);
       toast({
         title: "Doctor information updated",

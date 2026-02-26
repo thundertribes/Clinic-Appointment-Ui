@@ -75,7 +75,7 @@ export default function UpdateBloodStockPage({ params }: { params: Promise<{ id:
 
     // Simulate API call
     setTimeout(() => {
-      console.log(values);
+      //console.log(values);
       setIsSubmitting(false);
       toast({
         title: "Blood unit updated",

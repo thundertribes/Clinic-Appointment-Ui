@@ -1,28 +1,19 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useParams } from "next/navigation"
-import {
-  ArrowLeft,
-  Calendar,
-  ChevronDown,
-  Download,
-  Filter,
-  MessageSquare,
-  Search,
-  SlidersHorizontal,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Textarea } from "@/components/ui/textarea"
-import { Separator } from "@/components/ui/separator"
+import { useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { ArrowLeft, Calendar, ChevronDown, Download, Filter, MessageSquare, Search, SlidersHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 
 // Mock data for the survey
 const survey = {
@@ -70,7 +61,7 @@ const survey = {
       options: ["Definitely", "Probably", "Not sure", "Probably not", "Definitely not"],
     },
   ],
-}
+};
 
 // Mock data for responses
 const allResponses = [
@@ -198,60 +189,54 @@ const allResponses = [
       { questionId: "q5", value: "Not sure" },
     ],
   },
-]
+];
 
 export default function FeedbackResponsesPage() {
-  const params = useParams()
-  const surveyId = params.id as string
+  const params = useParams();
+  const surveyId = params.id as string;
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [departmentFilter, setDepartmentFilter] = useState("all")
-  const [ratingFilter, setRatingFilter] = useState("all")
-  const [selectedResponse, setSelectedResponse] = useState<string | null>(null)
-  const [replyText, setReplyText] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [ratingFilter, setRatingFilter] = useState("all");
+  const [selectedResponse, setSelectedResponse] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
 
   // Get unique departments for filter
-  const departments = Array.from(new Set(allResponses.map((r) => r.department)))
+  const departments = Array.from(new Set(allResponses.map((r) => r.department)));
 
   // Filter responses based on search term and filters
   const filteredResponses = allResponses.filter((response) => {
-    const matchesSearch =
-      response.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      response.answers.some((a) => a.value.toLowerCase().includes(searchTerm.toLowerCase()))
+    const matchesSearch = response.patientName.toLowerCase().includes(searchTerm.toLowerCase()) || response.answers.some((a) => a.value.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesDepartment = departmentFilter === "all" || response.department === departmentFilter
+    const matchesDepartment = departmentFilter === "all" || response.department === departmentFilter;
 
-    const matchesRating =
-      ratingFilter === "all" ||
-      (ratingFilter === "positive" && getOverallRating(response) >= 4) ||
-      (ratingFilter === "neutral" && getOverallRating(response) === 3) ||
-      (ratingFilter === "negative" && getOverallRating(response) <= 2)
+    const matchesRating = ratingFilter === "all" || (ratingFilter === "positive" && getOverallRating(response) >= 4) || (ratingFilter === "neutral" && getOverallRating(response) === 3) || (ratingFilter === "negative" && getOverallRating(response) <= 2);
 
-    return matchesSearch && matchesDepartment && matchesRating
-  })
+    return matchesSearch && matchesDepartment && matchesRating;
+  });
 
   // Function to get the overall rating from a response
   function getOverallRating(response: (typeof allResponses)[0]): number {
-    const ratingAnswer = response.answers.find((a) => a.questionId === "q1")
-    return ratingAnswer ? Number.parseInt(ratingAnswer.value) : 0
+    const ratingAnswer = response.answers.find((a) => a.questionId === "q1");
+    return ratingAnswer ? Number.parseInt(ratingAnswer.value) : 0;
   }
 
   // Function to get the answer for a specific question
   function getAnswer(response: (typeof allResponses)[0], questionId: string): string {
-    const answer = response.answers.find((a) => a.questionId === questionId)
-    return answer ? answer.value : "N/A"
+    const answer = response.answers.find((a) => a.questionId === questionId);
+    return answer ? answer.value : "N/A";
   }
 
   // Function to get the selected response
   function getSelectedResponseData() {
-    return allResponses.find((r) => r.id === selectedResponse)
+    return allResponses.find((r) => r.id === selectedResponse);
   }
 
   // Function to handle reply submission
   function handleReplySubmit() {
     // In a real app, this would call an API to send the reply
-    console.log(`Sending reply to response ${selectedResponse}: ${replyText}`)
-    setReplyText("")
+    //console.log(`Sending reply to response ${selectedResponse}: ${replyText}`)
+    setReplyText("");
     // You would typically close the dialog or show a success message here
   }
 
@@ -307,10 +292,7 @@ export default function FeedbackResponsesPage() {
               <div className="text-2xl font-bold">
                 {allResponses.filter((r) => getOverallRating(r) >= 4).length}
                 <span className="text-sm font-normal text-muted-foreground ml-1">
-                  (
-                  {Math.round(
-                    (allResponses.filter((r) => getOverallRating(r) >= 4).length / allResponses.length) * 100,
-                  )}
+                  ({Math.round((allResponses.filter((r) => getOverallRating(r) >= 4).length / allResponses.length) * 100)}
                   %)
                 </span>
               </div>
@@ -320,10 +302,7 @@ export default function FeedbackResponsesPage() {
               <div className="text-2xl font-bold">
                 {allResponses.filter((r) => getOverallRating(r) <= 2).length}
                 <span className="text-sm font-normal text-muted-foreground ml-1">
-                  (
-                  {Math.round(
-                    (allResponses.filter((r) => getOverallRating(r) <= 2).length / allResponses.length) * 100,
-                  )}
+                  ({Math.round((allResponses.filter((r) => getOverallRating(r) <= 2).length / allResponses.length) * 100)}
                   %)
                 </span>
               </div>
@@ -343,13 +322,7 @@ export default function FeedbackResponsesPage() {
             <div className="flex flex-wrap items-center gap-2">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search responses..."
-                  className="pl-8 w-[200px] md:w-[300px]"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <Input type="search" placeholder="Search responses..." className="pl-8 w-[200px] md:w-[300px]" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
               </div>
               <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
                 <SelectTrigger className="w-[150px]">
@@ -407,12 +380,7 @@ export default function FeedbackResponsesPage() {
                     <TableCell>
                       <div className="flex">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <span
-                            key={star}
-                            className={`text-lg ${
-                              star <= getOverallRating(response) ? "text-yellow-500" : "text-gray-300"
-                            }`}
-                          >
+                          <span key={star} className={`text-lg ${star <= getOverallRating(response) ? "text-yellow-500" : "text-gray-300"}`}>
                             ★
                           </span>
                         ))}
@@ -452,13 +420,7 @@ export default function FeedbackResponsesPage() {
             <div className="flex flex-wrap items-center gap-2">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search responses..."
-                  className="pl-8 w-[200px] md:w-[300px]"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <Input type="search" placeholder="Search responses..." className="pl-8 w-[200px] md:w-[300px]" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
               </div>
               <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
                 <SelectTrigger className="w-[150px]">
@@ -503,12 +465,7 @@ export default function FeedbackResponsesPage() {
                     </div>
                     <div className="flex">
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <span
-                          key={star}
-                          className={`text-lg ${
-                            star <= getOverallRating(response) ? "text-yellow-500" : "text-gray-300"
-                          }`}
-                        >
+                        <span key={star} className={`text-lg ${star <= getOverallRating(response) ? "text-yellow-500" : "text-gray-300"}`}>
                           ★
                         </span>
                       ))}
@@ -560,18 +517,12 @@ export default function FeedbackResponsesPage() {
                 <div>
                   <h3 className="font-medium">{getSelectedResponseData()?.patientName}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {getSelectedResponseData()?.department} •
-                    {new Date(getSelectedResponseData()?.submittedAt || "").toLocaleString()}
+                    {getSelectedResponseData()?.department} •{new Date(getSelectedResponseData()?.submittedAt || "").toLocaleString()}
                   </p>
                 </div>
                 <div className="flex mt-2 md:mt-0">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <span
-                      key={star}
-                      className={`text-lg ${
-                        star <= getOverallRating(getSelectedResponseData()!) ? "text-yellow-500" : "text-gray-300"
-                      }`}
-                    >
+                    <span key={star} className={`text-lg ${star <= getOverallRating(getSelectedResponseData()!) ? "text-yellow-500" : "text-gray-300"}`}>
                       ★
                     </span>
                   ))}
@@ -593,12 +544,7 @@ export default function FeedbackResponsesPage() {
 
               <div className="space-y-2">
                 <h4 className="font-medium">Reply to Patient</h4>
-                <Textarea
-                  placeholder="Type your response here..."
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                  rows={4}
-                />
+                <Textarea placeholder="Type your response here..." value={replyText} onChange={(e) => setReplyText(e.target.value)} rows={4} />
                 <div className="flex justify-end">
                   <Button onClick={handleReplySubmit} disabled={!replyText.trim()}>
                     <MessageSquare className="h-4 w-4 mr-2" />
@@ -611,5 +557,5 @@ export default function FeedbackResponsesPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

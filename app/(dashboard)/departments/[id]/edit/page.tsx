@@ -1,22 +1,22 @@
-"use client"
-import type React from "react"
-import { use, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Building2, Save } from "lucide-react"
-import Link from "next/link"
+"use client";
+import type React from "react";
+import { use, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { ArrowLeft, Building2, Save } from "lucide-react";
+import Link from "next/link";
 
 export default function EditDepartmentPage({ params }: { params: Promise<{ id: string }> }) {
-  const [currentColor, setCurrentColor] = useState("bg-blue-500")
-  const { id } = use(params)
+  const [currentColor, setCurrentColor] = useState("bg-blue-500");
+  const { id } = use(params);
   // In a real application, you would fetch the department data based on the ID
-  const departmentId = Number.parseInt(id)
-  const departmentData = departments.find((d) => d.id === departmentId) || departments[0]
+  const departmentId = Number.parseInt(id);
+  const departmentData = departments.find((d) => d.id === departmentId) || departments[0];
 
   const [department, setDepartment] = useState({
     name: departmentData.name,
@@ -26,18 +26,18 @@ export default function EditDepartmentPage({ params }: { params: Promise<{ id: s
     phone: "+1 (555) 123-4567",
     email: `${departmentData.name.toLowerCase()}@clinic.com`,
     description: `The ${departmentData.name} department at our clinic is dedicated to providing exceptional care in the field of ${departmentData.name.toLowerCase()} medicine. Our team of specialists works collaboratively to deliver comprehensive treatment plans tailored to each patient's unique needs.`,
-  })
+  });
 
   const handleChange = (field: string, value: string) => {
-    setDepartment((prev) => ({ ...prev, [field]: value }))
-  }
+    setDepartment((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // In a real application, you would save the department data here
-    console.log("Department data saved:", department)
+    //console.log("Department data saved:", department)
     // Then redirect to the department details page
-  }
+  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -60,12 +60,7 @@ export default function EditDepartmentPage({ params }: { params: Promise<{ id: s
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Department Name</Label>
-                <Input
-                  id="name"
-                  value={department.name}
-                  onChange={(e) => handleChange("name", e.target.value)}
-                  placeholder="Enter department name"
-                />
+                <Input id="name" value={department.name} onChange={(e) => handleChange("name", e.target.value)} placeholder="Enter department name" />
               </div>
 
               <div className="space-y-2">
@@ -86,50 +81,27 @@ export default function EditDepartmentPage({ params }: { params: Promise<{ id: s
 
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Input
-                  id="location"
-                  value={department.location}
-                  onChange={(e) => handleChange("location", e.target.value)}
-                  placeholder="Enter department location"
-                />
+                <Input id="location" value={department.location} onChange={(e) => handleChange("location", e.target.value)} placeholder="Enter department location" />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    value={department.phone}
-                    onChange={(e) => handleChange("phone", e.target.value)}
-                    placeholder="Enter phone number"
-                  />
+                  <Input id="phone" value={department.phone} onChange={(e) => handleChange("phone", e.target.value)} placeholder="Enter phone number" />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    value={department.email}
-                    onChange={(e) => handleChange("email", e.target.value)}
-                    placeholder="Enter email address"
-                  />
+                  <Input id="email" value={department.email} onChange={(e) => handleChange("email", e.target.value)} placeholder="Enter email address" />
                 </div>
               </div>
 
               <div className="flex items-center justify-between space-y-0">
                 <div className="flex flex-col space-y-1">
                   <Label htmlFor="status">Department Status</Label>
-                  <span className="text-sm text-muted-foreground">
-                    {department.status === "Active"
-                      ? "Department is currently active"
-                      : "Department is currently inactive"}
-                  </span>
+                  <span className="text-sm text-muted-foreground">{department.status === "Active" ? "Department is currently active" : "Department is currently inactive"}</span>
                 </div>
-                <Switch
-                  id="status"
-                  checked={department.status === "Active"}
-                  onCheckedChange={(checked) => handleChange("status", checked ? "Active" : "Inactive")}
-                />
+                <Switch id="status" checked={department.status === "Active"} onCheckedChange={(checked) => handleChange("status", checked ? "Active" : "Inactive")} />
               </div>
             </CardContent>
           </Card>
@@ -142,13 +114,7 @@ export default function EditDepartmentPage({ params }: { params: Promise<{ id: s
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={department.description}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                  placeholder="Enter department description"
-                  rows={5}
-                />
+                <Textarea id="description" value={department.description} onChange={(e) => handleChange("description", e.target.value)} placeholder="Enter department description" rows={5} />
               </div>
 
               <div className="space-y-2">
@@ -167,11 +133,7 @@ export default function EditDepartmentPage({ params }: { params: Promise<{ id: s
                 <Label>Department Color</Label>
                 <div className="flex gap-2">
                   {["bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-purple-500"].map((color) => (
-                    <div
-                      key={color}
-                      className={`h-8 w-8 rounded-full ${color} ${color === currentColor ? "ring-2 ring-primary" : ""} cursor-pointer ring-offset-2 `}
-                      onClick={() => setCurrentColor(color)}
-                    />
+                    <div key={color} className={`h-8 w-8 rounded-full ${color} ${color === currentColor ? "ring-2 ring-primary" : ""} cursor-pointer ring-offset-2 `} onClick={() => setCurrentColor(color)} />
                   ))}
                 </div>
               </div>
@@ -189,7 +151,7 @@ export default function EditDepartmentPage({ params }: { params: Promise<{ id: s
         </div>
       </form>
     </div>
-  )
+  );
 }
 
 const departments = [
@@ -273,4 +235,4 @@ const departments = [
     services: 5,
     status: "Inactive",
   },
-]
+];

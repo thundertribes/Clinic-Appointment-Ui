@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { use, useState } from "react"
-import Link from "next/link"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { format } from "date-fns"
-import { ArrowLeft, CalendarIcon, Save } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { use, useState } from "react";
+import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { format } from "date-fns";
+import { ArrowLeft, CalendarIcon, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Mock data for a single room allotment
 const allotment = {
@@ -45,7 +45,7 @@ const allotment = {
   billingStatus: "Insurance Verified",
   insuranceProvider: "Blue Cross Blue Shield",
   insurancePolicyNumber: "BCBS-12345678",
-}
+};
 
 // Form schema
 const formSchema = z.object({
@@ -71,11 +71,11 @@ const formSchema = z.object({
   billingStatus: z.string().min(1, { message: "Billing status is required" }),
   insuranceProvider: z.string().optional(),
   insurancePolicyNumber: z.string().optional(),
-})
+});
 
 export default function EditRoomAllotmentPage({ params }: { params: Promise<{ id: string }> }) {
-  const {id} = use(params)
-  const [date, setDate] = useState<Date>()
+  const { id } = use(params);
+  const [date, setDate] = useState<Date>();
 
   // Initialize form with existing data
   const form = useForm<z.infer<typeof formSchema>>({
@@ -104,13 +104,13 @@ export default function EditRoomAllotmentPage({ params }: { params: Promise<{ id
       insuranceProvider: allotment.insuranceProvider,
       insurancePolicyNumber: allotment.insurancePolicyNumber,
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // In a real application, this would update the allotment in the database
-    console.log(values)
+    //console.log(values)
     // Redirect to the allotment details page
-    window.location.href = `/rooms/alloted/${id}`
+    window.location.href = `/rooms/alloted/${id}`;
   }
 
   return (
@@ -363,23 +363,14 @@ export default function EditRoomAllotmentPage({ params }: { params: Promise<{ id
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"}`}
-                                >
+                                <Button variant={"outline"} className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"}`}>
                                   {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
-                              <CalendarComponent
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                                initialFocus
-                              />
+                              <CalendarComponent mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                             </PopoverContent>
                           </Popover>
                           <FormMessage />
@@ -408,23 +399,14 @@ export default function EditRoomAllotmentPage({ params }: { params: Promise<{ id
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"}`}
-                                >
+                                <Button variant={"outline"} className={`w-full pl-3 text-left font-normal ${!field.value && "text-muted-foreground"}`}>
                                   {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
-                              <CalendarComponent
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) => date < new Date("1900-01-01")}
-                                initialFocus
-                              />
+                              <CalendarComponent mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date < new Date("1900-01-01")} initialFocus />
                             </PopoverContent>
                           </Popover>
                           <FormMessage />
@@ -575,5 +557,5 @@ export default function EditRoomAllotmentPage({ params }: { params: Promise<{ id
         </form>
       </Form>
     </div>
-  )
+  );
 }

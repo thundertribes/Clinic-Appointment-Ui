@@ -1,37 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
-import {
-  ArrowLeft,
-  Calendar,
-  CheckCircle2,
-  Clock,
-  Copy,
-  Edit,
-  ExternalLink,
-  MessageSquare,
-  Share2,
-  Trash2,
-  Users,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { useState } from "react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Calendar, CheckCircle2, Clock, Copy, Edit, ExternalLink, MessageSquare, Share2, Trash2, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // Mock data for the survey
 const survey = {
@@ -92,7 +73,7 @@ const survey = {
     qrCode: true,
     link: true,
   },
-}
+};
 
 // Mock data for recent responses
 const recentResponses = [
@@ -120,29 +101,29 @@ const recentResponses = [
     comment: "The video quality could be better, but the doctor was very thorough and helpful.",
     department: "Cardiology",
   },
-]
+];
 
 export default function FeedbackDetailsPage() {
-  const params = useParams()
-  const router = useRouter()
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [shareDialogOpen, setShareDialogOpen] = useState(false)
-  const surveyId = params.id as string
+  const params = useParams();
+  const router = useRouter();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const surveyId = params.id as string;
 
   // Function to handle survey deletion
   const handleDeleteSurvey = () => {
     // In a real app, this would call an API to delete the survey
-    console.log(`Deleting survey ${surveyId}`)
-    setDeleteDialogOpen(false)
-    router.push("/feedback")
-  }
+    //console.log(`Deleting survey ${surveyId}`)
+    setDeleteDialogOpen(false);
+    router.push("/feedback");
+  };
 
   // Function to copy survey link
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`https://clinic-dashboard.com/s/${surveyId}`)
+    navigator.clipboard.writeText(`https://clinic-dashboard.com/s/${surveyId}`);
     // In a real app, you would show a toast notification here
-    console.log("Survey link copied to clipboard")
-  }
+    //console.log("Survey link copied to clipboard")
+  };
 
   return (
     <div className="container mx-auto space-y-6">
@@ -190,13 +171,7 @@ export default function FeedbackDetailsPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-1">
                   <div className="text-sm font-medium">Status</div>
-                  <Badge
-                    variant={
-                      survey.status === "active" ? "default" : survey.status === "draft" ? "secondary" : "outline"
-                    }
-                  >
-                    {survey.status.charAt(0).toUpperCase() + survey.status.slice(1)}
-                  </Badge>
+                  <Badge variant={survey.status === "active" ? "default" : survey.status === "draft" ? "secondary" : "outline"}>{survey.status.charAt(0).toUpperCase() + survey.status.slice(1)}</Badge>
                 </div>
                 <div className="space-y-1">
                   <div className="text-sm font-medium">Responses</div>
@@ -252,8 +227,7 @@ export default function FeedbackDetailsPage() {
               </div>
             </CardContent>
             <CardFooter className="text-sm text-muted-foreground">
-              Created on {new Date(survey.createdAt).toLocaleDateString()} • Last updated{" "}
-              {new Date(survey.lastUpdated).toLocaleDateString()}
+              Created on {new Date(survey.createdAt).toLocaleDateString()} • Last updated {new Date(survey.lastUpdated).toLocaleDateString()}
             </CardFooter>
           </Card>
 
@@ -275,10 +249,7 @@ export default function FeedbackDetailsPage() {
                       </div>
                       <div className="flex">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <span
-                            key={star}
-                            className={`text-lg ${star <= response.rating ? "text-yellow-500" : "text-gray-300"}`}
-                          >
+                          <span key={star} className={`text-lg ${star <= response.rating ? "text-yellow-500" : "text-gray-300"}`}>
                             ★
                           </span>
                         ))}
@@ -376,9 +347,7 @@ export default function FeedbackDetailsPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Are you sure you want to delete this survey?</DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete the survey and all its responses.
-            </DialogDescription>
+            <DialogDescription>This action cannot be undone. This will permanently delete the survey and all its responses.</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
@@ -402,9 +371,7 @@ export default function FeedbackDetailsPage() {
             <div className="space-y-2">
               <Label>Survey Link</Label>
               <div className="flex items-center gap-2">
-                <code className="flex-1 text-xs bg-muted px-3 py-2 rounded">
-                  https://clinic-dashboard.com/s/{surveyId}
-                </code>
+                <code className="flex-1 text-xs bg-muted px-3 py-2 rounded">https://clinic-dashboard.com/s/{surveyId}</code>
                 <Button variant="outline" size="sm" onClick={handleCopyLink}>
                   <Copy className="h-4 w-4 mr-2" />
                   Copy
@@ -436,5 +403,5 @@ export default function FeedbackDetailsPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

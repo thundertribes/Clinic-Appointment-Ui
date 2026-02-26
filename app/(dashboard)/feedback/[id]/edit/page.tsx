@@ -1,25 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, Plus, Save, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Separator } from "@/components/ui/separator"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Plus, Save, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
 // Mock data for the survey
 const initialSurvey = {
@@ -80,24 +73,24 @@ const initialSurvey = {
     qrCode: true,
     link: true,
   },
-}
+};
 
 export default function FeedbackEditPage() {
-  const params = useParams()
-  const router = useRouter()
-  const surveyId = params.id as string
+  const params = useParams();
+  const router = useRouter();
+  const surveyId = params.id as string;
 
-  const [survey, setSurvey] = useState({ ...initialSurvey })
-  const [unsavedChanges, setUnsavedChanges] = useState(false)
-  const [discardDialogOpen, setDiscardDialogOpen] = useState(false)
-  const [deleteQuestionDialogOpen, setDeleteQuestionDialogOpen] = useState(false)
-  const [questionToDelete, setQuestionToDelete] = useState<string | null>(null)
+  const [survey, setSurvey] = useState({ ...initialSurvey });
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
+  const [deleteQuestionDialogOpen, setDeleteQuestionDialogOpen] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState<string | null>(null);
 
   // Function to update survey title and description
   const updateSurveyDetails = (field: string, value: string) => {
-    setSurvey((prev) => ({ ...prev, [field]: value }))
-    setUnsavedChanges(true)
-  }
+    setSurvey((prev) => ({ ...prev, [field]: value }));
+    setUnsavedChanges(true);
+  };
 
   // Function to update survey settings
   const updateSurveySettings = (field: string, value: boolean | string) => {
@@ -107,9 +100,9 @@ export default function FeedbackEditPage() {
         ...prev.settings,
         [field]: value,
       },
-    }))
-    setUnsavedChanges(true)
-  }
+    }));
+    setUnsavedChanges(true);
+  };
 
   // Function to update survey distribution methods
   const updateDistribution = (method: string, value: boolean) => {
@@ -119,18 +112,18 @@ export default function FeedbackEditPage() {
         ...prev.distribution,
         [method]: value,
       },
-    }))
-    setUnsavedChanges(true)
-  }
+    }));
+    setUnsavedChanges(true);
+  };
 
   // Function to update question text
   const updateQuestionText = (questionId: string, text: string) => {
     setSurvey((prev) => ({
       ...prev,
       questions: prev.questions.map((q) => (q.id === questionId ? { ...q, text } : q)),
-    }))
-    setUnsavedChanges(true)
-  }
+    }));
+    setUnsavedChanges(true);
+  };
 
   // Function to update question type
   const updateQuestionType = (questionId: string, type: string) => {
@@ -144,29 +137,29 @@ export default function FeedbackEditPage() {
               ...q,
               type,
               options: type === "rating" ? ["1", "2", "3", "4", "5"] : ["Option 1", "Option 2", "Option 3"],
-            }
+            };
           }
           // If changing to a type that doesn't need options
           if (type === "text" && q.options) {
-            const { options, ...rest } = q
-            return { ...rest, type }
+            const { options, ...rest } = q;
+            return { ...rest, type };
           }
-          return { ...q, type }
+          return { ...q, type };
         }
-        return q
+        return q;
       }),
-    }))
-    setUnsavedChanges(true)
-  }
+    }));
+    setUnsavedChanges(true);
+  };
 
   // Function to update question required status
   const updateQuestionRequired = (questionId: string, required: boolean) => {
     setSurvey((prev) => ({
       ...prev,
       questions: prev.questions.map((q) => (q.id === questionId ? { ...q, required } : q)),
-    }))
-    setUnsavedChanges(true)
-  }
+    }));
+    setUnsavedChanges(true);
+  };
 
   // Function to update question options
   const updateQuestionOption = (questionId: string, optionIndex: number, value: string) => {
@@ -174,15 +167,15 @@ export default function FeedbackEditPage() {
       ...prev,
       questions: prev.questions.map((q) => {
         if (q.id === questionId && q.options) {
-          const newOptions = [...q.options]
-          newOptions[optionIndex] = value
-          return { ...q, options: newOptions }
+          const newOptions = [...q.options];
+          newOptions[optionIndex] = value;
+          return { ...q, options: newOptions };
         }
-        return q
+        return q;
       }),
-    }))
-    setUnsavedChanges(true)
-  }
+    }));
+    setUnsavedChanges(true);
+  };
 
   // Function to add a new option to a question
   const addQuestionOption = (questionId: string) => {
@@ -190,13 +183,13 @@ export default function FeedbackEditPage() {
       ...prev,
       questions: prev.questions.map((q) => {
         if (q.id === questionId && q.options) {
-          return { ...q, options: [...q.options, `Option ${q.options.length + 1}`] }
+          return { ...q, options: [...q.options, `Option ${q.options.length + 1}`] };
         }
-        return q
+        return q;
       }),
-    }))
-    setUnsavedChanges(true)
-  }
+    }));
+    setUnsavedChanges(true);
+  };
 
   // Function to remove an option from a question
   const removeQuestionOption = (questionId: string, optionIndex: number) => {
@@ -204,15 +197,15 @@ export default function FeedbackEditPage() {
       ...prev,
       questions: prev.questions.map((q) => {
         if (q.id === questionId && q.options && q.options.length > 1) {
-          const newOptions = [...q.options]
-          newOptions.splice(optionIndex, 1)
-          return { ...q, options: newOptions }
+          const newOptions = [...q.options];
+          newOptions.splice(optionIndex, 1);
+          return { ...q, options: newOptions };
         }
-        return q
+        return q;
       }),
-    }))
-    setUnsavedChanges(true)
-  }
+    }));
+    setUnsavedChanges(true);
+  };
 
   // Function to add a new question
   const addQuestion = () => {
@@ -221,19 +214,19 @@ export default function FeedbackEditPage() {
       type: "text",
       required: false,
       text: "New Question",
-    }
+    };
     setSurvey((prev) => ({
       ...prev,
       questions: [...prev.questions, newQuestion],
-    }))
-    setUnsavedChanges(true)
-  }
+    }));
+    setUnsavedChanges(true);
+  };
 
   // Function to delete a question
   const deleteQuestion = (questionId: string) => {
-    setQuestionToDelete(questionId)
-    setDeleteQuestionDialogOpen(true)
-  }
+    setQuestionToDelete(questionId);
+    setDeleteQuestionDialogOpen(true);
+  };
 
   // Function to confirm question deletion
   const confirmDeleteQuestion = () => {
@@ -241,35 +234,35 @@ export default function FeedbackEditPage() {
       setSurvey((prev) => ({
         ...prev,
         questions: prev.questions.filter((q) => q.id !== questionToDelete),
-      }))
-      setUnsavedChanges(true)
+      }));
+      setUnsavedChanges(true);
     }
-    setDeleteQuestionDialogOpen(false)
-    setQuestionToDelete(null)
-  }
+    setDeleteQuestionDialogOpen(false);
+    setQuestionToDelete(null);
+  };
 
   // Function to save survey changes
   const saveSurvey = () => {
     // In a real app, this would call an API to save the survey
-    console.log("Saving survey:", survey)
-    setUnsavedChanges(false)
-    router.push(`/feedback/${surveyId}`)
-  }
+    //console.log("Saving survey:", survey)
+    setUnsavedChanges(false);
+    router.push(`/feedback/${surveyId}`);
+  };
 
   // Function to handle discard changes
   const handleDiscard = () => {
     if (unsavedChanges) {
-      setDiscardDialogOpen(true)
+      setDiscardDialogOpen(true);
     } else {
-      router.push(`/feedback/${surveyId}`)
+      router.push(`/feedback/${surveyId}`);
     }
-  }
+  };
 
   // Function to confirm discard changes
   const confirmDiscard = () => {
-    setDiscardDialogOpen(false)
-    router.push(`/feedback/${surveyId}`)
-  }
+    setDiscardDialogOpen(false);
+    router.push(`/feedback/${surveyId}`);
+  };
 
   return (
     <div className="container mx-auto space-y-6">
@@ -309,12 +302,7 @@ export default function FeedbackEditPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={survey.description}
-                  onChange={(e) => updateSurveyDetails("description", e.target.value)}
-                  rows={3}
-                />
+                <Textarea id="description" value={survey.description} onChange={(e) => updateSurveyDetails("description", e.target.value)} rows={3} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
@@ -344,23 +332,14 @@ export default function FeedbackEditPage() {
                     <Badge variant="outline" className="mb-2">
                       Question {index + 1}
                     </Badge>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => deleteQuestion(question.id)}
-                      className="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => deleteQuestion(question.id)} className="text-destructive hover:text-destructive/90 hover:bg-destructive/10">
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor={`question-${question.id}`}>Question Text</Label>
-                    <Input
-                      id={`question-${question.id}`}
-                      value={question.text}
-                      onChange={(e) => updateQuestionText(question.id, e.target.value)}
-                    />
+                    <Input id={`question-${question.id}`} value={question.text} onChange={(e) => updateQuestionText(question.id, e.target.value)} />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -379,11 +358,7 @@ export default function FeedbackEditPage() {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <Switch
-                        id={`required-${question.id}`}
-                        checked={question.required}
-                        onCheckedChange={(checked) => updateQuestionRequired(question.id, checked)}
-                      />
+                      <Switch id={`required-${question.id}`} checked={question.required} onCheckedChange={(checked) => updateQuestionRequired(question.id, checked)} />
                       <Label htmlFor={`required-${question.id}`}>Required Question</Label>
                     </div>
                   </div>
@@ -393,29 +368,15 @@ export default function FeedbackEditPage() {
                       <Label>Options</Label>
                       {question.options.map((option, optionIndex) => (
                         <div key={optionIndex} className="flex items-center gap-2">
-                          <Input
-                            value={option}
-                            onChange={(e) => updateQuestionOption(question.id, optionIndex, e.target.value)}
-                            className="flex-1"
-                          />
+                          <Input value={option} onChange={(e) => updateQuestionOption(question.id, optionIndex, e.target.value)} className="flex-1" />
                           {question.options && question.options.length > 1 && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeQuestionOption(question.id, optionIndex)}
-                              className="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
-                            >
+                            <Button variant="ghost" size="icon" onClick={() => removeQuestionOption(question.id, optionIndex)} className="text-destructive hover:text-destructive/90 hover:bg-destructive/10">
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           )}
                         </div>
                       ))}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => addQuestionOption(question.id)}
-                        className="mt-2"
-                      >
+                      <Button variant="outline" size="sm" onClick={() => addQuestionOption(question.id)} className="mt-2">
                         <Plus className="h-4 w-4 mr-2" />
                         Add Option
                       </Button>
@@ -444,11 +405,7 @@ export default function FeedbackEditPage() {
                   <Label htmlFor="anonymous">Allow Anonymous Responses</Label>
                   <p className="text-sm text-muted-foreground">Let patients submit without identification</p>
                 </div>
-                <Switch
-                  id="anonymous"
-                  checked={survey.settings.allowAnonymous}
-                  onCheckedChange={(checked) => updateSurveySettings("allowAnonymous", checked)}
-                />
+                <Switch id="anonymous" checked={survey.settings.allowAnonymous} onCheckedChange={(checked) => updateSurveySettings("allowAnonymous", checked)} />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
@@ -456,11 +413,7 @@ export default function FeedbackEditPage() {
                   <Label htmlFor="notify">Notify on New Response</Label>
                   <p className="text-sm text-muted-foreground">Receive email notifications for new responses</p>
                 </div>
-                <Switch
-                  id="notify"
-                  checked={survey.settings.notifyOnResponse}
-                  onCheckedChange={(checked) => updateSurveySettings("notifyOnResponse", checked)}
-                />
+                <Switch id="notify" checked={survey.settings.notifyOnResponse} onCheckedChange={(checked) => updateSurveySettings("notifyOnResponse", checked)} />
               </div>
               <Separator />
               <div className="flex items-center justify-between">
@@ -468,21 +421,12 @@ export default function FeedbackEditPage() {
                   <Label htmlFor="autoclose">Auto-close Survey</Label>
                   <p className="text-sm text-muted-foreground">Automatically close survey after a date</p>
                 </div>
-                <Switch
-                  id="autoclose"
-                  checked={survey.settings.autoClose}
-                  onCheckedChange={(checked) => updateSurveySettings("autoClose", checked)}
-                />
+                <Switch id="autoclose" checked={survey.settings.autoClose} onCheckedChange={(checked) => updateSurveySettings("autoClose", checked)} />
               </div>
               <Separator />
               <div className="space-y-2">
                 <Label htmlFor="thankYouMessage">Thank You Message</Label>
-                <Textarea
-                  id="thankYouMessage"
-                  value={survey.settings.thankYouMessage}
-                  onChange={(e) => updateSurveySettings("thankYouMessage", e.target.value as string)}
-                  rows={3}
-                />
+                <Textarea id="thankYouMessage" value={survey.settings.thankYouMessage} onChange={(e) => updateSurveySettings("thankYouMessage", e.target.value as string)} rows={3} />
               </div>
             </CardContent>
           </Card>
@@ -495,35 +439,19 @@ export default function FeedbackEditPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label htmlFor="email-dist">Email Distribution</Label>
-                <Switch
-                  id="email-dist"
-                  checked={survey.distribution.email}
-                  onCheckedChange={(checked) => updateDistribution("email", checked)}
-                />
+                <Switch id="email-dist" checked={survey.distribution.email} onCheckedChange={(checked) => updateDistribution("email", checked)} />
               </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="sms-dist">SMS Distribution</Label>
-                <Switch
-                  id="sms-dist"
-                  checked={survey.distribution.sms}
-                  onCheckedChange={(checked) => updateDistribution("sms", checked)}
-                />
+                <Switch id="sms-dist" checked={survey.distribution.sms} onCheckedChange={(checked) => updateDistribution("sms", checked)} />
               </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="qr-dist">QR Code Distribution</Label>
-                <Switch
-                  id="qr-dist"
-                  checked={survey.distribution.qrCode}
-                  onCheckedChange={(checked) => updateDistribution("qrCode", checked)}
-                />
+                <Switch id="qr-dist" checked={survey.distribution.qrCode} onCheckedChange={(checked) => updateDistribution("qrCode", checked)} />
               </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="link-dist">Direct Link Distribution</Label>
-                <Switch
-                  id="link-dist"
-                  checked={survey.distribution.link}
-                  onCheckedChange={(checked) => updateDistribution("link", checked)}
-                />
+                <Switch id="link-dist" checked={survey.distribution.link} onCheckedChange={(checked) => updateDistribution("link", checked)} />
               </div>
             </CardContent>
           </Card>
@@ -566,5 +494,5 @@ export default function FeedbackEditPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

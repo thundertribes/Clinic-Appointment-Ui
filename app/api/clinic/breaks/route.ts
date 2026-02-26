@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // GET /api/clinic/breaks - Fetch all clinic breaks
 export async function GET() {
   try {
     if (!BACKEND_URL) {
-      return NextResponse.json(
-        { success: false, message: "BACKEND_URL not defined" },
-        { status: 500 }
-      );
+      return NextResponse.json({ success: false, message: "BACKEND_URL not defined" }, { status: 500 });
     }
 
     // Get token from cookies
@@ -18,10 +15,7 @@ export async function GET() {
     const token = cookieStore.get("accessToken")?.value;
 
     if (!token) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized - No token found" },
-        { status: 401 }
-      );
+      return NextResponse.json({ success: false, message: "Unauthorized - No token found" }, { status: 401 });
     }
 
     // Call backend to get clinic breaks
@@ -43,9 +37,6 @@ export async function GET() {
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error("GET CLINIC BREAKS ERROR:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // GET /api/clinic/schedule - Fetch clinic schedule
 export async function GET() {
   try {
     if (!BACKEND_URL) {
-      return NextResponse.json(
-        { success: false, message: "BACKEND_URL not defined" },
-        { status: 500 }
-      );
+      return NextResponse.json({ success: false, message: "BACKEND_URL not defined" }, { status: 500 });
     }
 
     // Get token from cookies
@@ -18,10 +15,7 @@ export async function GET() {
     const token = cookieStore.get("accessToken")?.value;
 
     if (!token) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized - No token found" },
-        { status: 401 }
-      );
+      return NextResponse.json({ success: false, message: "Unauthorized - No token found" }, { status: 401 });
     }
 
     // Call backend to get schedule
@@ -42,10 +36,7 @@ export async function GET() {
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error("GET SCHEDULE ERROR:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -53,10 +44,7 @@ export async function GET() {
 export async function PUT(req: Request) {
   try {
     if (!BACKEND_URL) {
-      return NextResponse.json(
-        { success: false, message: "BACKEND_URL not defined" },
-        { status: 500 }
-      );
+      return NextResponse.json({ success: false, message: "BACKEND_URL not defined" }, { status: 500 });
     }
 
     // Get token from cookies
@@ -64,17 +52,14 @@ export async function PUT(req: Request) {
     const token = cookieStore.get("accessToken")?.value;
 
     if (!token) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized - No token found" },
-        { status: 401 }
-      );
+      return NextResponse.json({ success: false, message: "Unauthorized - No token found" }, { status: 401 });
     }
 
     // Get request body
     const body = await req.json();
-    console.log("UPDATE SCHEDULE BODY:", body);
-    console.log("BACKEND_URL:", BACKEND_URL);
-    console.log("Token exists:", !!token);
+    //console.log("UPDATE SCHEDULE BODY:", body);
+    //console.log("BACKEND_URL:", BACKEND_URL);
+    //console.log("Token exists:", !!token);
 
     // Call backend to update schedule
     const backendRes = await fetch(`${BACKEND_URL}/clinic/schedule`, {
@@ -86,10 +71,10 @@ export async function PUT(req: Request) {
       body: JSON.stringify(body),
     });
 
-    console.log("Backend response status:", backendRes.status);
+    //console.log("Backend response status:", backendRes.status);
 
     const data = await backendRes.json();
-    console.log("Backend response data:", data);
+    //console.log("Backend response data:", data);
 
     if (!backendRes.ok) {
       console.error("Backend error:", data);
@@ -100,9 +85,6 @@ export async function PUT(req: Request) {
   } catch (error) {
     console.error("UPDATE SCHEDULE ERROR:", error);
     console.error("Error details:", error instanceof Error ? error.message : error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error", error: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: "Internal server error", error: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }

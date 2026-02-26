@@ -1,17 +1,17 @@
-"use client"
-import Link from "next/link"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { ChevronLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+"use client";
+import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   roomNumber: z.string().min(1, { message: "Room number is required" }),
@@ -24,7 +24,7 @@ const formSchema = z.object({
   facilities: z.array(z.string()).optional(),
   status: z.string().min(1, { message: "Status is required" }),
   notes: z.string().optional(),
-})
+});
 
 const facilities = [
   { id: "tv", label: "Television" },
@@ -35,7 +35,7 @@ const facilities = [
   { id: "wheelchair", label: "Wheelchair Accessible" },
   { id: "oxygen", label: "Oxygen Supply" },
   { id: "nurse-call", label: "Nurse Call Button" },
-]
+];
 
 export default function AddRoomPage() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,12 +52,12 @@ export default function AddRoomPage() {
       status: "available",
       notes: "",
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    //console.log(values)
     // In a real application, you would submit this data to your backend
-    alert("Room added successfully!")
+    alert("Room added successfully!");
   }
 
   return (
@@ -76,9 +76,7 @@ export default function AddRoomPage() {
       <Card>
         <CardHeader>
           <CardTitle>Room Details</CardTitle>
-          <CardDescription>
-            Add a new room to the hospital inventory. Fill in all the required information below.
-          </CardDescription>
+          <CardDescription>Add a new room to the hospital inventory. Fill in all the required information below.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -279,15 +277,13 @@ export default function AddRoomPage() {
                                     <Checkbox
                                       checked={field.value?.includes(facility.id)}
                                       onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([...(field.value || []), facility.id])
-                                          : field.onChange(field.value?.filter((value) => value !== facility.id))
+                                        return checked ? field.onChange([...(field.value || []), facility.id]) : field.onChange(field.value?.filter((value) => value !== facility.id));
                                       }}
                                     />
                                   </FormControl>
                                   <FormLabel className="font-normal">{facility.label}</FormLabel>
                                 </FormItem>
-                              )
+                              );
                             }}
                           />
                         ))}
@@ -323,5 +319,5 @@ export default function AddRoomPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

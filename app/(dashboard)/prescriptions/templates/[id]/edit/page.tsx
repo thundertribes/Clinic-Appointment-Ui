@@ -394,7 +394,7 @@ export default function EditTemplatePage({ params }: { params: Promise<{ id: str
     }
 
     // In a real app, this would call an API to update the template
-    console.log("Saving updated template:", formData);
+    //console.log("Saving updated template:", formData);
 
     // Navigate back to the template details page with a success message
     router.push(`/prescriptions/templates/${id}?updated=true`);

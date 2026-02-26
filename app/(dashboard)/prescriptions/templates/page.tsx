@@ -258,7 +258,7 @@ export default function MedicineTemplatesPage() {
 
   const handleSaveTemplate = () => {
     // Here you would normally submit the data to your backend
-    console.log("Saving template:", newTemplate);
+    //console.log("Saving template:", newTemplate);
 
     // Show success message
     setSuccessMessage("Template saved successfully");
@@ -294,7 +294,7 @@ export default function MedicineTemplatesPage() {
 
   const handleDeleteTemplate = (templateId: any) => {
     // Here you would normally delete the template from your backend
-    console.log("Deleting template:", templateId);
+    //console.log("Deleting template:", templateId);
 
     // Show success message
     setSuccessMessage("Template deleted successfully");
@@ -308,7 +308,7 @@ export default function MedicineTemplatesPage() {
 
   const handleDuplicateTemplate = (template: any) => {
     // Here you would normally duplicate the template in your backend
-    console.log("Duplicating template:", template);
+    //console.log("Duplicating template:", template);
 
     // In a real app, you would create a new template based on the existing one
     // and then redirect to the edit page for the new template

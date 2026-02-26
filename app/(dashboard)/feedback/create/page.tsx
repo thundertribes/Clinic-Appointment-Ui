@@ -103,7 +103,7 @@ export default function CreateSurveyPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Here you would typically save the survey to your backend
-    console.log({
+    //console.log({
       title: surveyTitle,
       description: surveyDescription,
       isActive,

@@ -1,25 +1,25 @@
-"use client"
-import { use, useState } from "react"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { CalendarIcon, ChevronLeft, Save } from "lucide-react"
-import { format } from "date-fns"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { cn } from "@/lib/utils"
-import { toast } from "@/components/ui/use-toast"
+"use client";
+import { use, useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { CalendarIcon, ChevronLeft, Save } from "lucide-react";
+import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
+import { toast } from "@/components/ui/use-toast";
 
 // Sample data for a birth record
-const birthRecord:any = {
+const birthRecord: any = {
   id: "BR-2023-001",
   childFirstName: "Emma",
   childMiddleName: "",
@@ -46,7 +46,7 @@ const birthRecord:any = {
   hospital: "City General Hospital",
   remarks: "Normal delivery without complications.",
   status: "Verified",
-}
+};
 
 const birthRecordFormSchema = z.object({
   childFirstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
@@ -76,40 +76,40 @@ const birthRecordFormSchema = z.object({
   attendingDoctor: z.string().min(2, { message: "Attending doctor is required." }),
   hospital: z.string().min(2, { message: "Hospital/facility is required." }),
   remarks: z.string().optional(),
-})
+});
 
-type BirthRecordFormValues = z.infer<typeof birthRecordFormSchema>
+type BirthRecordFormValues = z.infer<typeof birthRecordFormSchema>;
 
 export default function EditBirthRecordPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params)
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { id } = use(params);
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // In a real application, you would fetch the record using the ID
   // const { id } = params;
   // const [record, setRecord] = useState(null);
   // useEffect(() => { fetch record data }, [id]);
 
-  const record = birthRecord // Using sample data for demonstration
+  const record = birthRecord; // Using sample data for demonstration
 
   const form = useForm<BirthRecordFormValues>({
     resolver: zodResolver(birthRecordFormSchema),
     defaultValues: record,
-  })
+  });
 
   function onSubmit(data: BirthRecordFormValues) {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     // Simulate API call
     setTimeout(() => {
-      console.log(data)
+      //console.log(data)
       toast({
         title: "Birth record updated",
         description: `Record for ${data.childFirstName} ${data.childLastName} has been updated successfully.`,
-      })
-      setIsSubmitting(false)
-      router.push(`/records/birth/${id}`)
-    }, 1000)
+      });
+      setIsSubmitting(false);
+      router.push(`/records/birth/${id}`);
+    }, 1000);
   }
 
   return (
@@ -181,11 +181,7 @@ export default function EditBirthRecordPage({ params }: { params: Promise<{ id: 
                     <FormItem className="space-y-3">
                       <FormLabel>Gender</FormLabel>
                       <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
-                        >
+                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1">
                           <FormItem className="flex items-center space-x-3 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="male" />
@@ -220,26 +216,14 @@ export default function EditBirthRecordPage({ params }: { params: Promise<{ id: 
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
+                            <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                               {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                            initialFocus
-                          />
+                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                         </PopoverContent>
                       </Popover>
                       <FormMessage />
@@ -364,26 +348,14 @@ export default function EditBirthRecordPage({ params }: { params: Promise<{ id: 
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
+                            <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                               {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                            initialFocus
-                          />
+                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                         </PopoverContent>
                       </Popover>
                       <FormMessage />
@@ -478,26 +450,14 @@ export default function EditBirthRecordPage({ params }: { params: Promise<{ id: 
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
+                            <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                               {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                            initialFocus
-                          />
+                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                         </PopoverContent>
                       </Popover>
                       <FormMessage />
@@ -596,11 +556,7 @@ export default function EditBirthRecordPage({ params }: { params: Promise<{ id: 
                   <FormItem>
                     <FormLabel>Additional Remarks (Optional)</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="Enter any additional information or notes about the birth"
-                        className="resize-none"
-                        {...field}
-                      />
+                      <Textarea placeholder="Enter any additional information or notes about the birth" className="resize-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -626,5 +582,5 @@ export default function EditBirthRecordPage({ params }: { params: Promise<{ id: 
         </form>
       </Form>
     </div>
-  )
+  );
 }

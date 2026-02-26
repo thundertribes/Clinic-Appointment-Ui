@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { CalendarIcon, InfoIcon } from "lucide-react"
-import { format } from "date-fns"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { CalendarIcon, InfoIcon } from "lucide-react";
+import { format } from "date-fns";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 const deathRecordSchema = z.object({
   // Personal Information
@@ -51,31 +51,31 @@ const deathRecordSchema = z.object({
   informantRelationship: z.string().min(2, { message: "Relationship must be at least 2 characters." }),
   informantContact: z.string().min(5, { message: "Contact information must be at least 5 characters." }),
   notes: z.string().optional(),
-})
+});
 
-type DeathRecordFormValues = z.infer<typeof deathRecordSchema>
+type DeathRecordFormValues = z.infer<typeof deathRecordSchema>;
 
 export default function AddDeathRecordPage() {
-  const router = useRouter()
-  const [activeTab, setActiveTab] = useState("personal")
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("personal");
 
   const defaultValues: Partial<DeathRecordFormValues> = {
     gender: "male",
     maritalStatus: "single",
     mannerOfDeath: "natural",
     autopsyPerformed: "no",
-  }
+  };
 
   const form = useForm<DeathRecordFormValues>({
     resolver: zodResolver(deathRecordSchema),
     defaultValues,
     mode: "onChange",
-  })
+  });
 
   function onSubmit(data: DeathRecordFormValues) {
-    console.log(data)
+    //console.log(data)
     // In a real application, you would save the data to your backend here
-    router.push("/records/death")
+    router.push("/records/death");
   }
 
   return (
@@ -98,7 +98,7 @@ export default function AddDeathRecordPage() {
       <Form {...form}>
         <form id="death-record-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList >
+            <TabsList>
               <TabsTrigger value="personal">Personal Info</TabsTrigger>
               <TabsTrigger value="death">Death Details</TabsTrigger>
               <TabsTrigger value="medical">Medical Info</TabsTrigger>
@@ -159,26 +159,14 @@ export default function AddDeathRecordPage() {
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
-                                >
+                                <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                                   {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                                initialFocus
-                              />
+                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                             </PopoverContent>
                           </Popover>
                           <FormMessage />
@@ -307,26 +295,14 @@ export default function AddDeathRecordPage() {
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
-                                >
+                                <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                                   {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={field.value}
-                                onSelect={field.onChange}
-                                disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                                initialFocus
-                              />
+                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                             </PopoverContent>
                           </Popover>
                           <FormMessage />
@@ -398,11 +374,7 @@ export default function AddDeathRecordPage() {
                         <FormItem className="space-y-3">
                           <FormLabel>Manner of Death</FormLabel>
                           <FormControl>
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                              className="flex flex-col space-y-1"
-                            >
+                            <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1">
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
                                   <RadioGroupItem value="natural" />
@@ -525,11 +497,7 @@ export default function AddDeathRecordPage() {
                         <FormItem className="md:col-span-2">
                           <FormLabel>Autopsy Findings</FormLabel>
                           <FormControl>
-                            <Textarea
-                              placeholder="Enter autopsy findings if applicable"
-                              {...field}
-                              disabled={form.watch("autopsyPerformed") === "no"}
-                            />
+                            <Textarea placeholder="Enter autopsy findings if applicable" {...field} disabled={form.watch("autopsyPerformed") === "no"} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -627,5 +595,5 @@ export default function AddDeathRecordPage() {
         </form>
       </Form>
     </div>
-  )
+  );
 }

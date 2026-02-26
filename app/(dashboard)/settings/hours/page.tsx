@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { ArrowLeft, Plus, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -143,11 +143,7 @@ export default function WorkingHoursPage() {
 
   // Update day times
   const updateDayTime = (dayOfWeek: number, field: "startTime" | "endTime", value: string) => {
-    setSchedule(
-      schedule.map((s) =>
-        s.dayOfWeek === dayOfWeek ? { ...s, [field]: value } : s
-      )
-    );
+    setSchedule(schedule.map((s) => (s.dayOfWeek === dayOfWeek ? { ...s, [field]: value } : s)));
   };
 
   // Save schedule
@@ -162,7 +158,7 @@ export default function WorkingHoursPage() {
         endTime: s.endTime,
       }));
 
-      console.log("Sending schedule data:", scheduleData);
+      //console.log("Sending schedule data:", scheduleData);
 
       const response = await fetch("/api/clinic/schedule", {
         method: "PUT",
@@ -173,7 +169,7 @@ export default function WorkingHoursPage() {
       });
 
       const data = await response.json();
-      console.log("Save response:", data);
+      //console.log("Save response:", data);
 
       if (data.success) {
         toast({
@@ -232,14 +228,17 @@ export default function WorkingHoursPage() {
   };
 
   // Group breaks by reason (e.g., "Lunch Break", "Coffee Break")
-  const groupedBreaks = breaks.reduce((acc, breakItem) => {
-    const key = breakItem.reason;
-    if (!acc[key]) {
-      acc[key] = [];
-    }
-    acc[key].push(breakItem);
-    return acc;
-  }, {} as Record<string, ClinicBreak[]>);
+  const groupedBreaks = breaks.reduce(
+    (acc, breakItem) => {
+      const key = breakItem.reason;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(breakItem);
+      return acc;
+    },
+    {} as Record<string, ClinicBreak[]>,
+  );
 
   // ==================== EXCEPTIONS (HOLIDAYS & SPECIAL HOURS) ====================
 
@@ -437,7 +436,7 @@ export default function WorkingHoursPage() {
           </Link>
           <h1 className="text-2xl font-bold tracking-tight">Working Hours</h1>
         </div>
-        
+
         {/* Full Page Cancel and Save button */}
         {/* <div className="flex items-center space-x-2">
           <Button
@@ -477,21 +476,13 @@ export default function WorkingHoursPage() {
                   return (
                     <div key={day.id} className="flex items-center justify-between flex-wrap gap-3 space-x-4">
                       <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`day-${day.id}`}
-                          checked={isEnabled}
-                          onCheckedChange={(checked) => toggleDay(day.id, checked as boolean)}
-                        />
+                        <Checkbox id={`day-${day.id}`} checked={isEnabled} onCheckedChange={(checked) => toggleDay(day.id, checked as boolean)} />
                         <Label htmlFor={`day-${day.id}`} className="w-24">
                           {day.name}
                         </Label>
                       </div>
                       <div className="flex flex-1 items-center space-x-2">
-                        <Select
-                          value={daySchedule?.startTime || "09:00"}
-                          onValueChange={(value) => updateDayTime(day.id, "startTime", value)}
-                          disabled={!isEnabled}
-                        >
+                        <Select value={daySchedule?.startTime || "09:00"} onValueChange={(value) => updateDayTime(day.id, "startTime", value)} disabled={!isEnabled}>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Start time" />
                           </SelectTrigger>
@@ -504,11 +495,7 @@ export default function WorkingHoursPage() {
                           </SelectContent>
                         </Select>
                         <span className="text-muted-foreground">to</span>
-                        <Select
-                          value={daySchedule?.endTime || "18:00"}
-                          onValueChange={(value) => updateDayTime(day.id, "endTime", value)}
-                          disabled={!isEnabled}
-                        >
+                        <Select value={daySchedule?.endTime || "18:00"} onValueChange={(value) => updateDayTime(day.id, "endTime", value)} disabled={!isEnabled}>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="End time" />
                           </SelectTrigger>
@@ -536,19 +523,15 @@ export default function WorkingHoursPage() {
                 Reset to Default
               </Button>
 
-          <Button
-            onClick={handleSaveSchedule}
-            disabled={isSaving || isLoading || !isDirty}
-          >
-            <Save className="mr-2 h-4 w-4" />
-            {isSaving ? "Saving..." : "Save Changes"}
-          </Button>
+              <Button onClick={handleSaveSchedule} disabled={isSaving || isLoading || !isDirty}>
+                <Save className="mr-2 h-4 w-4" />
+                {isSaving ? "Saving..." : "Save Changes"}
+              </Button>
             </div>
           </CardContent>
         </Card>
 
         <div className="space-y-6">
-
           {/* Break Timings */}
           <Card>
             <CardHeader>
@@ -578,10 +561,7 @@ export default function WorkingHoursPage() {
                         {breakItems
                           .sort((a, b) => a.dayOfWeek - b.dayOfWeek)
                           .map((breakItem) => (
-                            <div
-                              key={breakItem.id}
-                              className="flex items-center gap-1 px-3 py-1.5 bg-muted rounded-md text-sm"
-                            >
+                            <div key={breakItem.id} className="flex items-center gap-1 px-3 py-1.5 bg-muted rounded-md text-sm">
                               <span>{breakItem.dayName}</span>
                               <Button
                                 variant="ghost"
@@ -589,7 +569,7 @@ export default function WorkingHoursPage() {
                                 className="h-5 w-5 ml-1"
                                 onClick={() => {
                                   // Delete functionality placeholder for future implementation
-                                  console.log("Delete break:", breakItem.id);
+                                  //console.log("Delete break:", breakItem.id);
                                 }}
                               >
                                 <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
@@ -609,7 +589,7 @@ export default function WorkingHoursPage() {
             </CardContent>
           </Card>
 
-        {/* SpecialHours and Holidays */}
+          {/* SpecialHours and Holidays */}
           <Card>
             <CardHeader>
               <CardTitle>Special Hours & Holidays</CardTitle>
@@ -640,17 +620,15 @@ export default function WorkingHoursPage() {
                                   <p className="font-medium">{format(new Date(sh.date), "MMM dd, yyyy")}</p>
                                 </div>
                                 <div>
-                                  <p className="text-muted-foreground">{sh.startTime} - {sh.endTime}</p>
+                                  <p className="text-muted-foreground">
+                                    {sh.startTime} - {sh.endTime}
+                                  </p>
                                 </div>
                                 <div>
                                   <p className="text-muted-foreground">{sh.reason}</p>
                                 </div>
                               </div>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleDeleteException(sh.id)}
-                              >
+                              <Button variant="ghost" size="icon" onClick={() => handleDeleteException(sh.id)}>
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>
                             </div>
@@ -671,55 +649,24 @@ export default function WorkingHoursPage() {
                                 </Button>
                               </PopoverTrigger>
                               <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                  mode="single"
-                                  selected={newSpecialHour.date}
-                                  onSelect={(date) => date && setNewSpecialHour({ ...newSpecialHour, date })}
-                                />
+                                <Calendar mode="single" selected={newSpecialHour.date} onSelect={(date) => date && setNewSpecialHour({ ...newSpecialHour, date })} />
                               </PopoverContent>
                             </Popover>
                           </div>
                           <div className="flex-1 min-w-[100px]">
                             <Label htmlFor="new-special-start">Start Time</Label>
-                            <Input
-                              type="time"
-                              id="new-special-start"
-                              value={newSpecialHour.startTime}
-                              onChange={(e) =>
-                                setNewSpecialHour({ ...newSpecialHour, startTime: e.target.value })
-                              }
-                            />
+                            <Input type="time" id="new-special-start" value={newSpecialHour.startTime} onChange={(e) => setNewSpecialHour({ ...newSpecialHour, startTime: e.target.value })} />
                           </div>
                           <div className="flex-1 min-w-[100px]">
                             <Label htmlFor="new-special-end">End Time</Label>
-                            <Input
-                              type="time"
-                              id="new-special-end"
-                              value={newSpecialHour.endTime}
-                              onChange={(e) =>
-                                setNewSpecialHour({ ...newSpecialHour, endTime: e.target.value })
-                              }
-                            />
+                            <Input type="time" id="new-special-end" value={newSpecialHour.endTime} onChange={(e) => setNewSpecialHour({ ...newSpecialHour, endTime: e.target.value })} />
                           </div>
                           <div className="flex-1 min-w-[150px]">
                             <Label htmlFor="new-special-reason">Reason</Label>
-                            <Input
-                              type="text"
-                              id="new-special-reason"
-                              placeholder="e.g. Early Closing"
-                              value={newSpecialHour.reason}
-                              onChange={(e) =>
-                                setNewSpecialHour({ ...newSpecialHour, reason: e.target.value })
-                              }
-                            />
+                            <Input type="text" id="new-special-reason" placeholder="e.g. Early Closing" value={newSpecialHour.reason} onChange={(e) => setNewSpecialHour({ ...newSpecialHour, reason: e.target.value })} />
                           </div>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="mt-3"
-                          onClick={handleAddSpecialHour}
-                        >
+                        <Button variant="outline" size="sm" className="mt-3" onClick={handleAddSpecialHour}>
                           <Plus className="mr-2 h-4 w-4" />
                           Add Special Hours
                         </Button>
@@ -749,11 +696,7 @@ export default function WorkingHoursPage() {
                                   <p className="text-muted-foreground">{holiday.reason}</p>
                                 </div>
                               </div>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleDeleteException(holiday.id)}
-                              >
+                              <Button variant="ghost" size="icon" onClick={() => handleDeleteException(holiday.id)}>
                                 <Trash2 className="h-4 w-4 text-destructive" />
                               </Button>
                             </div>
@@ -774,33 +717,16 @@ export default function WorkingHoursPage() {
                                 </Button>
                               </PopoverTrigger>
                               <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                  mode="single"
-                                  selected={newHoliday.date}
-                                  onSelect={(date) => date && setNewHoliday({ ...newHoliday, date })}
-                                />
+                                <Calendar mode="single" selected={newHoliday.date} onSelect={(date) => date && setNewHoliday({ ...newHoliday, date })} />
                               </PopoverContent>
                             </Popover>
                           </div>
                           <div className="flex-1">
                             <Label htmlFor="new-holiday-name">Holiday Name</Label>
-                            <Input
-                              type="text"
-                              id="new-holiday-name"
-                              placeholder="e.g. Christmas Day"
-                              value={newHoliday.reason}
-                              onChange={(e) =>
-                                setNewHoliday({ ...newHoliday, reason: e.target.value })
-                              }
-                            />
+                            <Input type="text" id="new-holiday-name" placeholder="e.g. Christmas Day" value={newHoliday.reason} onChange={(e) => setNewHoliday({ ...newHoliday, reason: e.target.value })} />
                           </div>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="mt-3"
-                          onClick={handleAddHoliday}
-                        >
+                        <Button variant="outline" size="sm" className="mt-3" onClick={handleAddHoliday}>
                           <Plus className="mr-2 h-4 w-4" />
                           Add Holiday
                         </Button>

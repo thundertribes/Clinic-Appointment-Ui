@@ -9,7 +9,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Type definitions matching the API response
 interface Doctor {
@@ -112,11 +112,7 @@ async function getPatientAppointments(patientId: string): Promise<Appointment[]>
   }
 }
 
-export default async function PatientDetailsPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function PatientDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const patient = await getPatient(id);
 
@@ -153,7 +149,8 @@ export default async function PatientDetailsPage({
             <div className="flex flex-col items-center text-center">
               <div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-muted-foreground">
-                  {patient.firstName.charAt(0)}{patient.lastName.charAt(0)}
+                  {patient.firstName.charAt(0)}
+                  {patient.lastName.charAt(0)}
                 </span>
               </div>
               <h2 className="text-xl font-bold">{fullName}</h2>
@@ -250,11 +247,7 @@ export default async function PatientDetailsPage({
                       {appointments.slice(0, 5).map((appointment) => (
                         <div key={appointment.id} className="flex items-center justify-between p-3 border rounded-md flex-wrap gap-3">
                           <div className="flex items-start gap-3">
-                            <div className={`h-2 w-2 mt-2 rounded-full ${
-                              appointment.status === "SCHEDULED" ? "bg-blue-500" :
-                              appointment.status === "COMPLETED" ? "bg-green-500" :
-                              appointment.status === "CANCELLED" ? "bg-red-500" : "bg-amber-500"
-                            }`} />
+                            <div className={`h-2 w-2 mt-2 rounded-full ${appointment.status === "SCHEDULED" ? "bg-blue-500" : appointment.status === "COMPLETED" ? "bg-green-500" : appointment.status === "CANCELLED" ? "bg-red-500" : "bg-amber-500"}`} />
                             <div>
                               <p className="font-medium">{appointment.type}</p>
                               <div className="flex items-center text-sm text-muted-foreground">
@@ -265,14 +258,7 @@ export default async function PatientDetailsPage({
                               </div>
                             </div>
                           </div>
-                          <Badge
-                            variant={appointment.status === "SCHEDULED" ? "outline" : "default"}
-                            className={
-                              appointment.status === "SCHEDULED" ? "border-blue-500 text-blue-500" :
-                              appointment.status === "COMPLETED" ? "bg-green-500" :
-                              appointment.status === "CANCELLED" ? "bg-red-500" : "bg-amber-500"
-                            }
-                          >
+                          <Badge variant={appointment.status === "SCHEDULED" ? "outline" : "default"} className={appointment.status === "SCHEDULED" ? "border-blue-500 text-blue-500" : appointment.status === "COMPLETED" ? "bg-green-500" : appointment.status === "CANCELLED" ? "bg-red-500" : "bg-amber-500"}>
                             {appointment.status}
                           </Badge>
                         </div>
@@ -313,20 +299,11 @@ export default async function PatientDetailsPage({
                             </TableCell>
                             <TableCell>{appointment.type}</TableCell>
                             <TableCell>
-                              <Badge
-                                variant={appointment.status === "SCHEDULED" ? "outline" : "default"}
-                                className={
-                                  appointment.status === "SCHEDULED" ? "border-blue-500 text-blue-500" :
-                                  appointment.status === "COMPLETED" ? "bg-green-500" :
-                                  appointment.status === "CANCELLED" ? "bg-red-500" : "bg-amber-500"
-                                }
-                              >
+                              <Badge variant={appointment.status === "SCHEDULED" ? "outline" : "default"} className={appointment.status === "SCHEDULED" ? "border-blue-500 text-blue-500" : appointment.status === "COMPLETED" ? "bg-green-500" : appointment.status === "CANCELLED" ? "bg-red-500" : "bg-amber-500"}>
                                 {appointment.status}
                               </Badge>
                             </TableCell>
-                            <TableCell className="max-w-[200px] truncate">
-                              {appointment.notes || "-"}
-                            </TableCell>
+                            <TableCell className="max-w-[200px] truncate">{appointment.notes || "-"}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

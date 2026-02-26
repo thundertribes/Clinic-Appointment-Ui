@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { use, useState } from "react"
-import Link from "next/link"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { ArrowLeft, Save } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Textarea } from "@/components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { use, useState } from "react";
+import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { ArrowLeft, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Mock data for a single room
 const roomData = {
@@ -30,7 +30,7 @@ const roomData = {
   dailyRate: 350,
   status: "occupied",
   notes: "Room was renovated in January 2023. New furniture and medical equipment installed.",
-}
+};
 
 // Form schema
 const formSchema = z.object({
@@ -45,9 +45,9 @@ const formSchema = z.object({
   size: z.string().optional(),
   dailyRate: z.coerce.number().min(0, "Daily rate must be a positive number"),
   notes: z.string().optional(),
-})
+});
 
-type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<typeof formSchema>;
 
 // Room features options
 const featureOptions = [
@@ -61,29 +61,18 @@ const featureOptions = [
   { id: "wheelchair-access", label: "Wheelchair Accessible" },
   { id: "refrigerator", label: "Refrigerator" },
   { id: "extra-bed", label: "Extra Bed for Attendant" },
-]
+];
 
 // Department options
-const departmentOptions = [
-  "Cardiology",
-  "Orthopedics",
-  "Neurology",
-  "Pulmonology",
-  "Gastroenterology",
-  "Pediatrics",
-  "Oncology",
-  "Gynecology",
-  "Urology",
-  "Dermatology",
-]
+const departmentOptions = ["Cardiology", "Orthopedics", "Neurology", "Pulmonology", "Gastroenterology", "Pediatrics", "Oncology", "Gynecology", "Urology", "Dermatology"];
 
 // Room type options
-const roomTypeOptions = ["Private", "Semi-Private", "General", "ICU", "NICU", "Operating Room", "Recovery Room"]
+const roomTypeOptions = ["Private", "Semi-Private", "General", "ICU", "NICU", "Operating Room", "Recovery Room"];
 
 export default function EditRoomPage({ params }: { params: Promise<{ id: string }> }) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { id } = use(params)
+  const { id } = use(params);
 
   // Initialize form with room data
   const form = useForm<FormValues>({
@@ -101,29 +90,26 @@ export default function EditRoomPage({ params }: { params: Promise<{ id: string 
       dailyRate: roomData.dailyRate,
       notes: roomData.notes,
     },
-  })
+  });
 
   // Handle form submission
   function onSubmit(values: FormValues) {
-    setIsSubmitting(true)
-    console.log(values)
+    setIsSubmitting(true);
+    //console.log(values)
 
     // Simulate API call
     setTimeout(() => {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
       // Redirect to room details page
-      window.location.href = `/rooms/departments/${id}`
-    }, 1500)
+      window.location.href = `/rooms/departments/${id}`;
+    }, 1500);
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         <div className="space-y-1">
-          <Link
-            href={`/rooms/departments/${id}`}
-            className="flex items-center text-sm text-muted-foreground hover:underline"
-          >
+          <Link href={`/rooms/departments/${id}`} className="flex items-center text-sm text-muted-foreground hover:underline">
             <ArrowLeft className="mr-1 h-4 w-4" />
             Back to Room Details
           </Link>
@@ -137,7 +123,7 @@ export default function EditRoomPage({ params }: { params: Promise<{ id: string 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Tabs defaultValue="basic" className="w-full">
-            <TabsList >
+            <TabsList>
               <TabsTrigger value="basic">Basic Information</TabsTrigger>
               <TabsTrigger value="features">Features & Amenities</TabsTrigger>
               <TabsTrigger value="billing">Billing & Notes</TabsTrigger>
@@ -312,15 +298,13 @@ export default function EditRoomPage({ params }: { params: Promise<{ id: string 
                                       <Checkbox
                                         checked={field.value?.includes(feature.label)}
                                         onCheckedChange={(checked) => {
-                                          return checked
-                                            ? field.onChange([...field.value, feature.label])
-                                            : field.onChange(field.value?.filter((value) => value !== feature.label))
+                                          return checked ? field.onChange([...field.value, feature.label]) : field.onChange(field.value?.filter((value) => value !== feature.label));
                                         }}
                                       />
                                     </FormControl>
                                     <FormLabel className="font-normal">{feature.label}</FormLabel>
                                   </FormItem>
-                                )
+                                );
                               }}
                             />
                           ))}
@@ -361,11 +345,7 @@ export default function EditRoomPage({ params }: { params: Promise<{ id: string 
                       <FormItem>
                         <FormLabel>Additional Notes</FormLabel>
                         <FormControl>
-                          <Textarea
-                            placeholder="Enter any additional notes about this room"
-                            className="min-h-[150px]"
-                            {...field}
-                          />
+                          <Textarea placeholder="Enter any additional notes about this room" className="min-h-[150px]" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -388,5 +368,5 @@ export default function EditRoomPage({ params }: { params: Promise<{ id: string 
         </form>
       </Form>
     </div>
-  )
+  );
 }

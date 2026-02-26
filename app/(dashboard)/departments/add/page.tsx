@@ -56,7 +56,7 @@ export default function AddDepartmentPage() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    //console.log(values);
     // In a real application, you would submit this data to your backend
     alert("Department added successfully!");
   }

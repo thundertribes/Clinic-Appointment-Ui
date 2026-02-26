@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // GET /api/patients - Fetch all patients
 export async function GET() {
   try {
     if (!BACKEND_URL) {
-      return NextResponse.json(
-        { success: false, message: "BACKEND_URL not defined" },
-        { status: 500 }
-      );
+      return NextResponse.json({ success: false, message: "BACKEND_URL not defined" }, { status: 500 });
     }
 
     // Get token from cookies
@@ -18,10 +15,7 @@ export async function GET() {
     const token = cookieStore.get("accessToken")?.value;
 
     if (!token) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized - No token found" },
-        { status: 401 }
-      );
+      return NextResponse.json({ success: false, message: "Unauthorized - No token found" }, { status: 401 });
     }
 
     // Call backend to get patients
@@ -44,10 +38,7 @@ export async function GET() {
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error("GET PATIENTS ERROR:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -55,10 +46,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     if (!BACKEND_URL) {
-      return NextResponse.json(
-        { success: false, message: "BACKEND_URL not defined" },
-        { status: 500 }
-      );
+      return NextResponse.json({ success: false, message: "BACKEND_URL not defined" }, { status: 500 });
     }
 
     // Get token from cookies
@@ -66,10 +54,7 @@ export async function POST(request: NextRequest) {
     const token = cookieStore.get("accessToken")?.value;
 
     if (!token) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized - No token found" },
-        { status: 401 }
-      );
+      return NextResponse.json({ success: false, message: "Unauthorized - No token found" }, { status: 401 });
     }
 
     // Get request body
@@ -94,9 +79,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("POST PATIENT ERROR:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

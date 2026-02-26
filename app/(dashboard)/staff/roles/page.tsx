@@ -1,63 +1,29 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-  ArrowLeft,
-  Search,
-  Plus,
-  MoreHorizontal,
-  Download,
-  Edit,
-  Trash,
-  Users,
-  Shield,
-  UserCog,
-  FileText,
-  Copy,
-  Info,
-  ShieldCheck,
-  UserPlus,
-  Eye,
-  RefreshCw,
-  Filter,
-} from "lucide-react"
-import Link from "next/link"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { useState } from "react"
-import { DeleteRoleModal } from "@/components/roles/delete-role-modal"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowLeft, Search, Plus, MoreHorizontal, Download, Edit, Trash, Users, Shield, UserCog, FileText, Copy, Info, ShieldCheck, UserPlus, Eye, RefreshCw, Filter } from "lucide-react";
+import Link from "next/link";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
+import { DeleteRoleModal } from "@/components/roles/delete-role-modal";
 
 export default function RolesAndPermissionsPage() {
   // Add this inside the component function
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [roleToDelete, setRoleToDelete] = useState<{ id: number; name: string } | null>(null)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [roleToDelete, setRoleToDelete] = useState<{ id: number; name: string } | null>(null);
 
   // Mock data for roles
   const roles = [
@@ -205,7 +171,7 @@ export default function RolesAndPermissionsPage() {
         settings: ["view", "edit"],
       },
     },
-  ]
+  ];
 
   // Mock data for role templates
   const roleTemplates = [
@@ -279,7 +245,7 @@ export default function RolesAndPermissionsPage() {
         settings: [],
       },
     },
-  ]
+  ];
 
   // Mock data for permission audit logs
   const auditLogs = [
@@ -328,13 +294,13 @@ export default function RolesAndPermissionsPage() {
       timestamp: "2023-11-05 10:30:15",
       user: "System Admin",
     },
-  ]
+  ];
 
   // Filter roles by category
-  const allRoles = roles
-  const medicalRoles = roles.filter((role) => role.category === "Medical")
-  const administrativeRoles = roles.filter((role) => role.category === "Administrative")
-  const customRoles = roles.filter((role) => role.category === "Custom")
+  const allRoles = roles;
+  const medicalRoles = roles.filter((role) => role.category === "Medical");
+  const administrativeRoles = roles.filter((role) => role.category === "Administrative");
+  const customRoles = roles.filter((role) => role.category === "Custom");
 
   // Modules for permission matrix
   const modules = [
@@ -346,10 +312,10 @@ export default function RolesAndPermissionsPage() {
     { id: "settings", name: "Settings", description: "System configuration and settings" },
     { id: "inventory", name: "Inventory", description: "Medical supplies and equipment" },
     { id: "staff", name: "Staff", description: "Staff management and scheduling" },
-  ]
+  ];
 
   // Permission types
-  const permissionTypes = ["view", "create", "edit", "delete"]
+  const permissionTypes = ["view", "create", "edit", "delete"];
 
   return (
     <div className="flex flex-col gap-6">
@@ -396,9 +362,7 @@ export default function RolesAndPermissionsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl xl:text-4xl mb-2 font-bold">{medicalRoles.length}</div>
-            <p className="text-xs text-muted-foreground">
-              {medicalRoles.reduce((sum, role) => sum + role.users, 0)} staff assigned
-            </p>
+            <p className="text-xs text-muted-foreground">{medicalRoles.reduce((sum, role) => sum + role.users, 0)} staff assigned</p>
           </CardContent>
         </Card>
         <Card className="bg-background">
@@ -485,9 +449,7 @@ export default function RolesAndPermissionsPage() {
                 <DialogContent className="bg-background">
                   <DialogHeader>
                     <DialogTitle>Create New Role</DialogTitle>
-                    <DialogDescription>
-                      Define a new role with specific permissions for staff members.
-                    </DialogDescription>
+                    <DialogDescription>Define a new role with specific permissions for staff members.</DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid gap-2">
@@ -652,8 +614,8 @@ export default function RolesAndPermissionsPage() {
                                   disabled={role.isDefault}
                                   className="text-destructive"
                                   onClick={() => {
-                                    setRoleToDelete(role)
-                                    setDeleteModalOpen(true)
+                                    setRoleToDelete(role);
+                                    setDeleteModalOpen(true);
                                   }}
                                 >
                                   <Trash className="mr-2 h-4 w-4" />
@@ -738,8 +700,8 @@ export default function RolesAndPermissionsPage() {
                                   disabled={role.isDefault}
                                   className="text-destructive"
                                   onClick={() => {
-                                    setRoleToDelete(role)
-                                    setDeleteModalOpen(true)
+                                    setRoleToDelete(role);
+                                    setDeleteModalOpen(true);
                                   }}
                                 >
                                   <Trash className="mr-2 h-4 w-4" />
@@ -824,8 +786,8 @@ export default function RolesAndPermissionsPage() {
                                   disabled={role.isDefault}
                                   className="text-destructive"
                                   onClick={() => {
-                                    setRoleToDelete(role)
-                                    setDeleteModalOpen(true)
+                                    setRoleToDelete(role);
+                                    setDeleteModalOpen(true);
                                   }}
                                 >
                                   <Trash className="mr-2 h-4 w-4" />
@@ -902,8 +864,8 @@ export default function RolesAndPermissionsPage() {
                                 <DropdownMenuItem
                                   className="text-destructive"
                                   onClick={() => {
-                                    setRoleToDelete(role)
-                                    setDeleteModalOpen(true)
+                                    setRoleToDelete(role);
+                                    setDeleteModalOpen(true);
                                   }}
                                 >
                                   <Trash className="mr-2 h-4 w-4" />
@@ -995,9 +957,7 @@ export default function RolesAndPermissionsPage() {
           <Card className="bg-background">
             <CardHeader>
               <CardTitle>Role Templates</CardTitle>
-              <CardDescription>
-                Pre-defined role configurations that can be applied to new staff members
-              </CardDescription>
+              <CardDescription>Pre-defined role configurations that can be applied to new staff members</CardDescription>
             </CardHeader>
             <CardContent>
               <div>
@@ -1090,9 +1050,7 @@ export default function RolesAndPermissionsPage() {
                       <UserPlus className="h-6 w-6 text-muted-foreground" />
                     </div>
                     <h3 className="text-lg font-medium mb-1">Create Template</h3>
-                    <p className="text-sm text-muted-foreground text-center mb-4">
-                      Define a new role template with custom permissions
-                    </p>
+                    <p className="text-sm text-muted-foreground text-center mb-4">Define a new role template with custom permissions</p>
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button>Create New Template</Button>
@@ -1204,11 +1162,11 @@ export default function RolesAndPermissionsPage() {
                             </TooltipProvider>
                           </div>
                         </TableCell>
-                        {allRoles.map((role:any) => (
+                        {allRoles.map((role: any) => (
                           <TableCell key={`${module.id}-${role.id}`} className="text-center">
                             <div className="flex flex-col items-center gap-3">
                               {permissionTypes.map((type) => {
-                                const hasPermission = role.permissions[module.id]?.includes(type)
+                                const hasPermission = role.permissions[module.id]?.includes(type);
                                 return (
                                   <div key={`${module.id}-${role.id}-${type}`} className="flex items-center gap-1">
                                     <Checkbox id={`${module.id}-${role.id}-${type}`} checked={hasPermission} />
@@ -1216,7 +1174,7 @@ export default function RolesAndPermissionsPage() {
                                       {type}
                                     </Label>
                                   </div>
-                                )
+                                );
                               })}
                             </div>
                           </TableCell>
@@ -1267,17 +1225,7 @@ export default function RolesAndPermissionsPage() {
                         <TableCell className="font-mono text-xs">{log.timestamp}</TableCell>
                         <TableCell>{log.role}</TableCell>
                         <TableCell>
-                          <Badge
-                            variant={
-                              log.action.includes("Added")
-                                ? "default"
-                                : log.action.includes("Removed")
-                                  ? "destructive"
-                                  : "outline"
-                            }
-                          >
-                            {log.action}
-                          </Badge>
+                          <Badge variant={log.action.includes("Added") ? "default" : log.action.includes("Removed") ? "destructive" : "outline"}>{log.action}</Badge>
                         </TableCell>
                         <TableCell>{log.module}</TableCell>
                         <TableCell>{log.permission}</TableCell>
@@ -1304,12 +1252,12 @@ export default function RolesAndPermissionsPage() {
           roleName={roleToDelete.name}
           onConfirm={() => {
             // This would be replaced with actual delete logic in a real app
-            console.log(`Deleting role: ${roleToDelete.name}`)
-            setDeleteModalOpen(false)
-            setRoleToDelete(null)
+            //console.log(`Deleting role: ${roleToDelete.name}`)
+            setDeleteModalOpen(false);
+            setRoleToDelete(null);
           }}
         />
       )}
     </div>
-  )
+  );
 }

@@ -1,31 +1,16 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   ArrowLeft,
   Search,
@@ -55,51 +40,51 @@ import {
   CircleXIcon as XCircle2,
   AlertOctagon,
   Clock3,
-} from "lucide-react"
-import Link from "next/link"
-import { EditTimeModal } from "@/components/attendance/edit-time-modal"
-import { AddNoteModal } from "@/components/attendance/add-note-modal"
-import { ViewHistoryModal } from "@/components/attendance/view-history-modal"
+} from "lucide-react";
+import Link from "next/link";
+import { EditTimeModal } from "@/components/attendance/edit-time-modal";
+import { AddNoteModal } from "@/components/attendance/add-note-modal";
+import { ViewHistoryModal } from "@/components/attendance/view-history-modal";
 
 export default function StaffAttendancePage() {
-  const [currentDate, setCurrentDate] = useState("May 15, 2023")
-  const [currentMonth, setCurrentMonth] = useState("May 2023")
-  const [selectedDepartment, setSelectedDepartment] = useState("All Departments")
-  const [searchQuery, setSearchQuery] = useState("")
+  const [currentDate, setCurrentDate] = useState("May 15, 2023");
+  const [currentMonth, setCurrentMonth] = useState("May 2023");
+  const [selectedDepartment, setSelectedDepartment] = useState("All Departments");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Add these new state variables
-  const [editTimeModalOpen, setEditTimeModalOpen] = useState(false)
-  const [addNoteModalOpen, setAddNoteModalOpen] = useState(false)
-  const [viewHistoryModalOpen, setViewHistoryModalOpen] = useState(false)
-  const [selectedStaffMember, setSelectedStaffMember] = useState<any>(null)
+  const [editTimeModalOpen, setEditTimeModalOpen] = useState(false);
+  const [addNoteModalOpen, setAddNoteModalOpen] = useState(false);
+  const [viewHistoryModalOpen, setViewHistoryModalOpen] = useState(false);
+  const [selectedStaffMember, setSelectedStaffMember] = useState<any>(null);
 
   // Add these functions after the state variables
   const handleEditTime = (staffMember: any) => {
-    setSelectedStaffMember(staffMember)
-    setEditTimeModalOpen(true)
-  }
+    setSelectedStaffMember(staffMember);
+    setEditTimeModalOpen(true);
+  };
 
   const handleAddNote = (staffMember: any) => {
-    setSelectedStaffMember(staffMember)
-    setAddNoteModalOpen(true)
-  }
+    setSelectedStaffMember(staffMember);
+    setAddNoteModalOpen(true);
+  };
 
   const handleViewHistory = (staffMember: any) => {
-    setSelectedStaffMember(staffMember)
-    setViewHistoryModalOpen(true)
-  }
+    setSelectedStaffMember(staffMember);
+    setViewHistoryModalOpen(true);
+  };
 
   const handleSaveTime = (data: { timeType: string; time: string }) => {
     // In a real app, this would update the database
-    console.log(`Updated ${data.timeType} to ${data.time} for ${selectedStaffMember?.name}`)
+    //console.log(`Updated ${data.timeType} to ${data.time} for ${selectedStaffMember?.name}`)
     // You could update the local state here to reflect the changes
-  }
+  };
 
   const handleSaveNote = (data: { noteType: string; note: string }) => {
     // In a real app, this would update the database
-    console.log(`Added ${data.noteType} note: ${data.note} for ${selectedStaffMember?.name}`)
+    //console.log(`Added ${data.noteType} note: ${data.note} for ${selectedStaffMember?.name}`)
     // You could update the local state here to reflect the changes
-  }
+  };
 
   // Mock data for attendance
   const attendanceData = [
@@ -199,7 +184,7 @@ export default function StaffAttendancePage() {
       hours: "0",
       avatar: "/abstract-dl.png",
     },
-  ]
+  ];
 
   // Mock data for leave requests
   const leaveRequests = [
@@ -255,7 +240,7 @@ export default function StaffAttendancePage() {
       approvedBy: "Lisa Thompson",
       avatar: "/abstract-dl.png",
     },
-  ]
+  ];
 
   // Mock data for monthly timesheets
   const timesheetData = [
@@ -309,11 +294,11 @@ export default function StaffAttendancePage() {
       status: "Approved",
       avatar: "/abstract-geometric-lt.png",
     },
-  ]
+  ];
 
   // Mock data for calendar view
-  const calendarDays = Array.from({ length: 31 }, (_, i) => i + 1)
-  const calendarStaff = attendanceData.slice(0, 5)
+  const calendarDays = Array.from({ length: 31 }, (_, i) => i + 1);
+  const calendarStaff = attendanceData.slice(0, 5);
 
   // Mock data for attendance statistics
   const attendanceStats = {
@@ -337,16 +322,14 @@ export default function StaffAttendancePage() {
       percentage: 12.5,
       trend: "-3%",
     },
-  }
+  };
 
   // Filter attendance data based on search query and department
   const filteredAttendance = attendanceData.filter((staff) => {
-    const matchesSearch =
-      staff.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      staff.role.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesDepartment = selectedDepartment === "All Departments" || staff.department === selectedDepartment
-    return matchesSearch && matchesDepartment
-  })
+    const matchesSearch = staff.name.toLowerCase().includes(searchQuery.toLowerCase()) || staff.role.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDepartment = selectedDepartment === "All Departments" || staff.department === selectedDepartment;
+    return matchesSearch && matchesDepartment;
+  });
 
   return (
     <div className="flex flex-col h-full">
@@ -370,10 +353,7 @@ export default function StaffAttendancePage() {
             <div className="text-2xl font-bold">{attendanceStats.present.count}</div>
             <div className="flex items-center mt-1">
               <div className="w-full bg-gray-200 dark:bg-neutral-900 rounded-full h-2.5">
-                <div
-                  className="bg-emerald-500 h-2.5 rounded-full"
-                  style={{ width: `${attendanceStats.present.percentage}%` }}
-                ></div>
+                <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: `${attendanceStats.present.percentage}%` }}></div>
               </div>
               <span className="text-xs text-emerald-400 ml-2">{attendanceStats.present.trend}</span>
             </div>
@@ -389,10 +369,7 @@ export default function StaffAttendancePage() {
             <div className="text-2xl font-bold">{attendanceStats.absent.count}</div>
             <div className="flex items-center mt-1">
               <div className="w-full bg-gray-200 dark:bg-neutral-900 rounded-full h-2.5">
-                <div
-                  className="bg-red-500 h-2.5 rounded-full"
-                  style={{ width: `${attendanceStats.absent.percentage}%` }}
-                ></div>
+                <div className="bg-red-500 h-2.5 rounded-full" style={{ width: `${attendanceStats.absent.percentage}%` }}></div>
               </div>
               <span className="text-xs text-red-400 ml-2">{attendanceStats.absent.trend}</span>
             </div>
@@ -408,10 +385,7 @@ export default function StaffAttendancePage() {
             <div className="text-2xl font-bold">{attendanceStats.onLeave.count}</div>
             <div className="flex items-center mt-1">
               <div className="w-full bg-gray-200 dark:bg-neutral-900 rounded-full h-2.5">
-                <div
-                  className="bg-blue-500 h-2.5 rounded-full"
-                  style={{ width: `${attendanceStats.onLeave.percentage}%` }}
-                ></div>
+                <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${attendanceStats.onLeave.percentage}%` }}></div>
               </div>
               <span className="text-xs text-blue-400 ml-2">{attendanceStats.onLeave.trend}</span>
             </div>
@@ -427,10 +401,7 @@ export default function StaffAttendancePage() {
             <div className="text-2xl font-bold">{attendanceStats.late.count}</div>
             <div className="flex items-center mt-1">
               <div className="w-full bg-gray-200 dark:bg-neutral-900 rounded-full h-2.5">
-                <div
-                  className="bg-amber-500 h-2.5 rounded-full"
-                  style={{ width: `${attendanceStats.late.percentage}%` }}
-                ></div>
+                <div className="bg-amber-500 h-2.5 rounded-full" style={{ width: `${attendanceStats.late.percentage}%` }}></div>
               </div>
               <span className="text-xs text-amber-400 ml-2">{attendanceStats.late.trend}</span>
             </div>
@@ -444,13 +415,7 @@ export default function StaffAttendancePage() {
           <div className="flex flex-col md:flex-row md:items-center gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                type="search"
-                placeholder="Search staff..."
-                className="w-full md:w-[300px] pl-10"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              <Input type="search" placeholder="Search staff..." className="w-full md:w-[300px] pl-10" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
             <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
               <SelectTrigger className="w-full md:w-[180px]">
@@ -482,9 +447,7 @@ export default function StaffAttendancePage() {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Record Attendance</DialogTitle>
-                  <DialogDescription className="text-gray-400">
-                    Record check-in or check-out time for staff members.
-                  </DialogDescription>
+                  <DialogDescription className="text-gray-400">Record check-in or check-out time for staff members.</DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid gap-2">
@@ -603,11 +566,7 @@ export default function StaffAttendancePage() {
                       <TableRow key={record.id}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <img
-                              src={record.avatar || "/user-2.png"}
-                              alt={record.name}
-                              className="h-8 w-8 rounded-full"
-                            />
+                            <img src={record.avatar || "/user-2.png"} alt={record.name} className="h-8 w-8 rounded-full" />
                             <span className="font-medium">{record.name}</span>
                           </div>
                         </TableCell>
@@ -704,31 +663,23 @@ export default function StaffAttendancePage() {
                         <TableRow key={staff.id}>
                           <TableCell className="sticky left-0 bg-gray-900 z-10 hover:bg-gray-800 w-[250px]">
                             <div className="flex items-center gap-2">
-                              <img
-                                src={staff.avatar || "/user-2.png"}
-                                alt={staff.name}
-                                className="h-8 w-8 rounded-full"
-                              />
+                              <img src={staff.avatar || "/user-2.png"} alt={staff.name} className="h-8 w-8 rounded-full" />
                               <span className="font-medium">{staff.name}</span>
                             </div>
                           </TableCell>
                           {calendarDays.map((day) => {
                             // Simulate different attendance statuses for different days
-                            let status = "Present"
-                            if (day % 7 === 0) status = "Weekend"
-                            else if (day === 15 && staff.id === 6) status = "Late"
-                            else if (day === 12 && staff.id === 7) status = "Absent"
-                            else if (day >= 15 && day <= 19 && staff.id === 8) status = "On Leave"
+                            let status = "Present";
+                            if (day % 7 === 0) status = "Weekend";
+                            else if (day === 15 && staff.id === 6) status = "Late";
+                            else if (day === 12 && staff.id === 7) status = "Absent";
+                            else if (day >= 15 && day <= 19 && staff.id === 8) status = "On Leave";
 
                             return (
                               <TableCell key={day} className="p-1 text-center">
-                                {status === "Weekend" ? (
-                                  <span className="text-gray-600">-</span>
-                                ) : (
-                                  <AttendanceStatusIcon status={status} />
-                                )}
+                                {status === "Weekend" ? <span className="text-gray-600">-</span> : <AttendanceStatusIcon status={status} />}
                               </TableCell>
-                            )
+                            );
                           })}
                         </TableRow>
                       ))}
@@ -798,11 +749,7 @@ export default function StaffAttendancePage() {
                       <TableRow key={timesheet.id}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <img
-                              src={timesheet.avatar || "/user-2.png"}
-                              alt={timesheet.name}
-                              className="h-8 w-8 rounded-full"
-                            />
+                            <img src={timesheet.avatar || "/user-2.png"} alt={timesheet.name} className="h-8 w-8 rounded-full" />
                             <span className="font-medium">{timesheet.name}</span>
                           </div>
                         </TableCell>
@@ -811,14 +758,7 @@ export default function StaffAttendancePage() {
                         <TableCell>{timesheet.totalHours}</TableCell>
                         <TableCell className="hidden md:table-cell">{timesheet.overtime}</TableCell>
                         <TableCell>
-                          <Badge
-                            variant={timesheet.status === "Approved" ? "default" : "outline"}
-                            className={
-                              timesheet.status === "Approved"
-                                ? "bg-green-600 text-white hover:bg-green-700"
-                                : "bg-transparent border-gray-600 text-gray-300"
-                            }
-                          >
+                          <Badge variant={timesheet.status === "Approved" ? "default" : "outline"} className={timesheet.status === "Approved" ? "bg-green-600 text-white hover:bg-green-700" : "bg-transparent border-gray-600 text-gray-300"}>
                             {timesheet.status}
                           </Badge>
                         </TableCell>
@@ -861,9 +801,7 @@ export default function StaffAttendancePage() {
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>Submit Leave Request</DialogTitle>
-                        <DialogDescription className="text-gray-400">
-                          Request time off or leave of absence.
-                        </DialogDescription>
+                        <DialogDescription className="text-gray-400">Request time off or leave of absence.</DialogDescription>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
@@ -946,11 +884,7 @@ export default function StaffAttendancePage() {
                       <TableRow key={request.id}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <img
-                              src={request.avatar || "/user-2.png"}
-                              alt={request.name}
-                              className="h-8 w-8 rounded-full"
-                            />
+                            <img src={request.avatar || "/user-2.png"} alt={request.name} className="h-8 w-8 rounded-full" />
                             <span className="font-medium">{request.name}</span>
                           </div>
                         </TableCell>
@@ -962,20 +896,8 @@ export default function StaffAttendancePage() {
                         </TableCell>
                         <TableCell>
                           <Badge
-                            variant={
-                              request.status === "Approved"
-                                ? "default"
-                                : request.status === "Rejected"
-                                  ? "destructive"
-                                  : "outline"
-                            }
-                            className={
-                              request.status === "Approved"
-                                ? "bg-green-600 text-white hover:bg-green-700"
-                                : request.status === "Rejected"
-                                  ? "bg-red-600 text-white hover:bg-red-700"
-                                  : "bg-transparent border-gray-600 text-gray-300"
-                            }
+                            variant={request.status === "Approved" ? "default" : request.status === "Rejected" ? "destructive" : "outline"}
+                            className={request.status === "Approved" ? "bg-green-600 text-white hover:bg-green-700" : request.status === "Rejected" ? "bg-red-600 text-white hover:bg-red-700" : "bg-transparent border-gray-600 text-gray-300"}
                           >
                             {request.status}
                           </Badge>
@@ -1138,27 +1060,13 @@ export default function StaffAttendancePage() {
       {/* Add these modal components at the end of the return statement */}
       {selectedStaffMember && (
         <>
-          <EditTimeModal
-            isOpen={editTimeModalOpen}
-            onClose={() => setEditTimeModalOpen(false)}
-            staffMember={selectedStaffMember}
-            onSave={handleSaveTime}
-          />
-          <AddNoteModal
-            isOpen={addNoteModalOpen}
-            onClose={() => setAddNoteModalOpen(false)}
-            staffMember={selectedStaffMember}
-            onSave={handleSaveNote}
-          />
-          <ViewHistoryModal
-            isOpen={viewHistoryModalOpen}
-            onClose={() => setViewHistoryModalOpen(false)}
-            staffMember={selectedStaffMember}
-          />
+          <EditTimeModal isOpen={editTimeModalOpen} onClose={() => setEditTimeModalOpen(false)} staffMember={selectedStaffMember} onSave={handleSaveTime} />
+          <AddNoteModal isOpen={addNoteModalOpen} onClose={() => setAddNoteModalOpen(false)} staffMember={selectedStaffMember} onSave={handleSaveNote} />
+          <ViewHistoryModal isOpen={viewHistoryModalOpen} onClose={() => setViewHistoryModalOpen(false)} staffMember={selectedStaffMember} />
         </>
       )}
     </div>
-  )
+  );
 }
 
 // Helper components
@@ -1170,48 +1078,48 @@ function StatusBadge({ status }: { status: string }) {
           <CheckCircle2 className="h-3 w-3 mr-1" />
           Present
         </Badge>
-      )
+      );
     case "Late":
       return (
         <Badge variant="warning" className="bg-amber-600 text-white hover:bg-amber-700">
           <AlertOctagon className="h-3 w-3 mr-1" />
           Late
         </Badge>
-      )
+      );
     case "Absent":
       return (
         <Badge variant="destructive" className="bg-red-600 text-white hover:bg-red-700">
           <XCircle2 className="h-3 w-3 mr-1" />
           Absent
         </Badge>
-      )
+      );
     case "On Leave":
       return (
         <Badge variant="outline" className="bg-transparent border-blue-600 text-blue-400">
           <Clock3 className="h-3 w-3 mr-1" />
           On Leave
         </Badge>
-      )
+      );
     default:
       return (
         <Badge variant="outline" className="bg-transparent border-gray-600 text-gray-300">
           {status}
         </Badge>
-      )
+      );
   }
 }
 
 function AttendanceStatusIcon({ status }: { status: string }) {
   switch (status) {
     case "Present":
-      return <CheckCircle2 className="h-4 w-4 text-emerald-500 mx-auto" />
+      return <CheckCircle2 className="h-4 w-4 text-emerald-500 mx-auto" />;
     case "Late":
-      return <AlertOctagon className="h-4 w-4 text-amber-500 mx-auto" />
+      return <AlertOctagon className="h-4 w-4 text-amber-500 mx-auto" />;
     case "Absent":
-      return <XCircle2 className="h-4 w-4 text-red-500 mx-auto" />
+      return <XCircle2 className="h-4 w-4 text-red-500 mx-auto" />;
     case "On Leave":
-      return <Clock3 className="h-4 w-4 text-blue-500 mx-auto" />
+      return <Clock3 className="h-4 w-4 text-blue-500 mx-auto" />;
     default:
-      return null
+      return null;
   }
 }

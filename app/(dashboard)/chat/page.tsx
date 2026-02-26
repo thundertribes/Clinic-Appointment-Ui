@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useEffect, useRef, useState } from "react"
-import { Search, Plus, Phone, Video, Info, Paperclip, Send, Smile, MoreVertical, ChartBar, MessageCircleIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+import { useEffect, useRef, useState } from "react";
+import { Search, Plus, Phone, Video, Info, Paperclip, Send, Smile, MoreVertical, ChartBar, MessageCircleIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 // Mock data for conversations
 const conversations = [
@@ -98,7 +98,7 @@ const conversations = [
     isGroup: true,
     members: 5,
   },
-]
+];
 
 // Mock data for messages in the current conversation
 const messages = [
@@ -120,16 +120,14 @@ const messages = [
   {
     id: "m3",
     sender: "Dr. James Wilson",
-    content:
-      "The patient has intermittent chest pain, but their ECG shows normal sinus rhythm. However, there's an elevation in troponin levels.",
+    content: "The patient has intermittent chest pain, but their ECG shows normal sinus rhythm. However, there's an elevation in troponin levels.",
     timestamp: "10:35 AM",
     isSender: false,
   },
   {
     id: "m4",
     sender: "You",
-    content:
-      "That's interesting. Have you checked for pericarditis? Sometimes it can present with normal ECG but elevated troponin.",
+    content: "That's interesting. Have you checked for pericarditis? Sometimes it can present with normal ECG but elevated troponin.",
     timestamp: "10:38 AM",
     isSender: true,
     status: "read",
@@ -148,31 +146,29 @@ const messages = [
     timestamp: "10:42 AM",
     isSender: false,
   },
-]
+];
 
 export default function ChatPage() {
-  const [activeConversation, setActiveConversation] = useState(conversations[0])
-  const [messageInput, setMessageInput] = useState("")
-  const [searchInput, setSearchInput] = useState("")
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const filteredConversations = conversations.filter((conv) =>
-    conv.name.toLowerCase().includes(searchInput.toLowerCase()),
-  )
+  const [activeConversation, setActiveConversation] = useState(conversations[0]);
+  const [messageInput, setMessageInput] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const filteredConversations = conversations.filter((conv) => conv.name.toLowerCase().includes(searchInput.toLowerCase()));
 
   const handleSendMessage = () => {
     if (messageInput.trim()) {
       // In a real app, you would send this message to your backend
-      console.log("Sending message:", messageInput)
-      setMessageInput("")
+      //console.log("Sending message:", messageInput)
+      setMessageInput("");
     }
-  }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
+  };
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -190,7 +186,10 @@ export default function ChatPage() {
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col gap-3">
-      <Button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden"> <MessageCircleIcon className="h-4 w-4" /> Open Chat</Button>
+      <Button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden">
+        {" "}
+        <MessageCircleIcon className="h-4 w-4" /> Open Chat
+      </Button>
       <div className="flex flex-1 overflow-hidden relative">
         {/* Sidebar with conversations */}
         <div className={cn("w-full sm:w-80 xxl:w-96 border-r duration-300 bg-background max-md:absolute max-md:left-0 max-md:top-0 max-md:h-full max-md:z-50", isSidebarOpen ? "translate-x-0" : "max-md:-translate-x-full")}>
@@ -204,12 +203,7 @@ export default function ChatPage() {
             </div>
             <div className="relative mt-2">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search conversations"
-                className="pl-8"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-              />
+              <Input placeholder="Search conversations" className="pl-8" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
             </div>
           </div>
           <Tabs defaultValue="all" className="px-4">
@@ -228,14 +222,7 @@ export default function ChatPage() {
           <div className="h-[calc(100vh-12rem)] overflow-y-auto">
             <div className="p-2">
               {filteredConversations.map((conversation) => (
-                <button
-                  key={conversation.id}
-                  className={cn(
-                    "flex w-full items-center gap-3 rounded-lg p-2 text-left transition-colors hover:bg-accent",
-                    activeConversation.id === conversation.id && "bg-accent",
-                  )}
-                  onClick={() => setActiveConversation(conversation)}
-                >
+                <button key={conversation.id} className={cn("flex w-full items-center gap-3 rounded-lg p-2 text-left transition-colors hover:bg-accent", activeConversation.id === conversation.id && "bg-accent")} onClick={() => setActiveConversation(conversation)}>
                   <div className="relative">
                     {conversation.isGroup ? (
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -257,9 +244,7 @@ export default function ChatPage() {
                         </AvatarFallback>
                       </Avatar>
                     )}
-                    {conversation.online && (
-                      <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background bg-green-500" />
-                    )}
+                    {conversation.online && <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-background bg-green-500" />}
                   </div>
                   <div className="flex-1 overflow-hidden">
                     <div className="flex items-center justify-between">
@@ -311,9 +296,7 @@ export default function ChatPage() {
                   <h3 className="font-medium text-sm lg:text-base">{activeConversation.name}</h3>
                   {activeConversation.online && <span className="text-xs text-green-500">Online</span>}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {activeConversation.isGroup ? `${activeConversation.members} members` : activeConversation.role}
-                </p>
+                <p className="text-xs text-muted-foreground">{activeConversation.isGroup ? `${activeConversation.members} members` : activeConversation.role}</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -382,33 +365,12 @@ export default function ChatPage() {
                         </AvatarFallback>
                       </Avatar>
                     )}
-                    <div
-                      className={cn(
-                        "max-w-md rounded-lg px-4 py-2",
-                        message.isSender ? "bg-primary text-primary-foreground" : "bg-muted",
-                      )}
-                    >
+                    <div className={cn("max-w-md rounded-lg px-4 py-2", message.isSender ? "bg-primary text-primary-foreground" : "bg-muted")}>
                       <p className="text-sm lg:text-base">{message.content}</p>
-                      <div
-                        className={cn(
-                          "mt-1 flex items-center justify-end gap-1 text-xs",
-                          message.isSender ? "text-primary-foreground/70" : "text-muted-foreground",
-                        )}
-                      >
+                      <div className={cn("mt-1 flex items-center justify-end gap-1 text-xs", message.isSender ? "text-primary-foreground/70" : "text-muted-foreground")}>
                         {message.timestamp}
                         {message.isSender && message.status === "read" && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-3 w-3"
-                          >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
                             <path d="M18 6 7 17l-5-5" />
                             <path d="m22 10-7.5 7.5L13 16" />
                           </svg>
@@ -429,13 +391,7 @@ export default function ChatPage() {
                 <span className="sr-only">Attach file</span>
               </Button>
               <div className="relative flex-1">
-                <Input
-                  placeholder="Type a message..."
-                  className="min-h-10 pr-10"
-                  value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
+                <Input placeholder="Type a message..." className="min-h-10 pr-10" value={messageInput} onChange={(e) => setMessageInput(e.target.value)} onKeyDown={handleKeyDown} />
                 <Button variant="ghost" size="icon" className="absolute bottom-0 right-0 top-0">
                   <Smile className="h-5 w-5" />
                   <span className="sr-only">Emoji</span>
@@ -450,5 +406,5 @@ export default function ChatPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -3,7 +3,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import type { Patient, PatientFilterOptions, PatientsApiResponse } from "@/types/patient";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 /**
  * Server-side function to fetch patients
@@ -58,7 +58,7 @@ export async function getPatients(): Promise<{
     // Backend returns { success, message, data } - extract data array
     const apiResponse: PatientsApiResponse = await response.json();
     const patients: Patient[] = apiResponse.data || [];
-    
+
     // Extract unique filter options from the data
     const filterOptions: PatientFilterOptions = {
       genders: [...new Set(patients.map((p) => p.gender).filter(Boolean))] as string[],
@@ -74,7 +74,7 @@ export async function getPatients(): Promise<{
     console.error("Error fetching patients:", error);
     return {
       patients: [],
-        filterOptions: { genders: [], doctors: [] },
+      filterOptions: { genders: [], doctors: [] },
       error: "Failed to fetch patients",
     };
   }

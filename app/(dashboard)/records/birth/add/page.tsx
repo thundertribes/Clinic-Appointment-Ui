@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { CalendarIcon, ChevronLeft, Save } from "lucide-react"
-import { format } from "date-fns"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { CalendarIcon, ChevronLeft, Save } from "lucide-react";
+import { format } from "date-fns";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { cn } from "@/lib/utils"
-import { toast } from "@/components/ui/use-toast"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
+import { toast } from "@/components/ui/use-toast";
 
 const birthRecordFormSchema = z.object({
   childFirstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
@@ -48,9 +48,9 @@ const birthRecordFormSchema = z.object({
   attendingDoctor: z.string().min(2, { message: "Attending doctor is required." }),
   hospital: z.string().min(2, { message: "Hospital/facility is required." }),
   remarks: z.string().optional(),
-})
+});
 
-type BirthRecordFormValues = z.infer<typeof birthRecordFormSchema>
+type BirthRecordFormValues = z.infer<typeof birthRecordFormSchema>;
 
 const defaultValues: Partial<BirthRecordFormValues> = {
   childMiddleName: "",
@@ -59,30 +59,30 @@ const defaultValues: Partial<BirthRecordFormValues> = {
   motherOccupation: "",
   fatherOccupation: "",
   remarks: "",
-}
+};
 
 export default function AddBirthRecordPage() {
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<BirthRecordFormValues>({
     resolver: zodResolver(birthRecordFormSchema),
     defaultValues,
-  })
+  });
 
   function onSubmit(data: BirthRecordFormValues) {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     // Simulate API call
     setTimeout(() => {
-      console.log(data)
+      //console.log(data)
       toast({
         title: "Birth record created",
         description: `Record for ${data.childFirstName} ${data.childLastName} has been created successfully.`,
-      })
-      setIsSubmitting(false)
-      router.push("/records/birth")
-    }, 1000)
+      });
+      setIsSubmitting(false);
+      router.push("/records/birth");
+    }, 1000);
   }
 
   return (
@@ -154,11 +154,7 @@ export default function AddBirthRecordPage() {
                     <FormItem className="space-y-3">
                       <FormLabel>Gender</FormLabel>
                       <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
-                        >
+                        <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1">
                           <FormItem className="flex items-center space-x-3 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="male" />
@@ -193,26 +189,14 @@ export default function AddBirthRecordPage() {
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
+                            <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                               {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                            initialFocus
-                          />
+                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                         </PopoverContent>
                       </Popover>
                       <FormMessage />
@@ -337,26 +321,14 @@ export default function AddBirthRecordPage() {
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
+                            <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                               {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                            initialFocus
-                          />
+                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                         </PopoverContent>
                       </Popover>
                       <FormMessage />
@@ -451,26 +423,14 @@ export default function AddBirthRecordPage() {
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
+                            <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                               {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                            initialFocus
-                          />
+                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                         </PopoverContent>
                       </Popover>
                       <FormMessage />
@@ -569,11 +529,7 @@ export default function AddBirthRecordPage() {
                   <FormItem>
                     <FormLabel>Additional Remarks (Optional)</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="Enter any additional information or notes about the birth"
-                        className="resize-none"
-                        {...field}
-                      />
+                      <Textarea placeholder="Enter any additional information or notes about the birth" className="resize-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -599,5 +555,5 @@ export default function AddBirthRecordPage() {
         </form>
       </Form>
     </div>
-  )
+  );
 }

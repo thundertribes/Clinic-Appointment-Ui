@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { Building, Globe, Mail, Phone, MapPin, FileText, AlertTriangle } from "lucide-react";
 import { cookies } from "next/headers";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Type definitions matching the API response
 interface EmergencyContact {
