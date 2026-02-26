@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import { ArrowLeft, Plus, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Separator } from "@/components/ui/separator"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-type QuestionType = "text" | "textarea" | "radio" | "checkbox" | "rating"
+type QuestionType = "text" | "textarea" | "radio" | "checkbox" | "rating";
 
 interface QuestionOption {
-  id: string
-  text: string
+  id: string;
+  text: string;
 }
 
 interface Question {
-  id: string
-  type: QuestionType
-  question: string
-  required: boolean
-  options: QuestionOption[]
+  id: string;
+  type: QuestionType;
+  question: string;
+  required: boolean;
+  options: QuestionOption[];
 }
 
 // Question types
@@ -37,15 +37,13 @@ const questionTypes = [
   { value: "radio", label: "Single Choice" },
   { value: "checkbox", label: "Multiple Choice" },
   { value: "rating", label: "Rating" },
-] as const
+] as const;
 
 export default function CreateSurveyPage() {
-  const [surveyTitle, setSurveyTitle] = useState("")
-  const [surveyDescription, setSurveyDescription] = useState("")
-  const [isActive, setIsActive] = useState(false)
-  const [questions, setQuestions] = useState<Question[]>([
-    { id: "1", type: "text", question: "", required: true, options: [] }
-  ])
+  const [surveyTitle, setSurveyTitle] = useState("");
+  const [surveyDescription, setSurveyDescription] = useState("");
+  const [isActive, setIsActive] = useState(false);
+  const [questions, setQuestions] = useState<Question[]>([{ id: "1", type: "text", question: "", required: true, options: [] }]);
 
   const addQuestion = () => {
     const newQuestion: Question = {
@@ -54,25 +52,21 @@ export default function CreateSurveyPage() {
       question: "",
       required: true,
       options: [],
-    }
-    setQuestions([...questions, newQuestion])
-  }
+    };
+    setQuestions([...questions, newQuestion]);
+  };
 
   const removeQuestion = (id: string) => {
-    setQuestions(questions.filter((q) => q.id !== id))
-  }
+    setQuestions(questions.filter((q) => q.id !== id));
+  };
 
   const updateQuestion = (id: string, field: keyof Question, value: Question[keyof Question]) => {
-    setQuestions(questions.map((q) => (q.id === id ? { ...q, [field]: value } : q)))
-  }
+    setQuestions(questions.map((q) => (q.id === id ? { ...q, [field]: value } : q)));
+  };
 
   const addOption = (questionId: string) => {
-    setQuestions(
-      questions.map((q) =>
-        q.id === questionId ? { ...q, options: [...q.options, { id: `opt${q.options.length + 1}`, text: "" }] } : q,
-      ),
-    )
-  }
+    setQuestions(questions.map((q) => (q.id === questionId ? { ...q, options: [...q.options, { id: `opt${q.options.length + 1}`, text: "" }] } : q)));
+  };
 
   const updateOption = (questionId: string, optionId: string, value: string) => {
     setQuestions(
@@ -84,8 +78,8 @@ export default function CreateSurveyPage() {
             }
           : q,
       ),
-    )
-  }
+    );
+  };
 
   const removeOption = (questionId: string, optionId: string) => {
     setQuestions(
@@ -97,21 +91,21 @@ export default function CreateSurveyPage() {
             }
           : q,
       ),
-    )
-  }
+    );
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // Here you would typically save the survey to your backend
-    //console.log({
-      title: surveyTitle,
-      description: surveyDescription,
-      isActive,
-      questions,
-    })
+    // console.log({
+    //   title: surveyTitle,
+    //   description: surveyDescription,
+    //   isActive,
+    //   questions,
+    // })
     // Then redirect to the surveys list
     // router.push('/feedback')
-  }
+  };
 
   return (
     <div className="container mx-auto space-y-6">
@@ -134,23 +128,11 @@ export default function CreateSurveyPage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="title">Survey Title</Label>
-              <Input
-                id="title"
-                placeholder="Enter survey title"
-                value={surveyTitle}
-                onChange={(e) => setSurveyTitle(e.target.value)}
-                required
-              />
+              <Input id="title" placeholder="Enter survey title" value={surveyTitle} onChange={(e) => setSurveyTitle(e.target.value)} required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                placeholder="Enter survey description"
-                value={surveyDescription}
-                onChange={(e) => setSurveyDescription(e.target.value)}
-                rows={3}
-              />
+              <Textarea id="description" placeholder="Enter survey description" value={surveyDescription} onChange={(e) => setSurveyDescription(e.target.value)} rows={3} />
             </div>
             <div className="flex items-center space-x-2">
               <Switch id="active" checked={isActive} onCheckedChange={setIsActive} />
@@ -185,13 +167,7 @@ export default function CreateSurveyPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor={`question-${question.id}`}>Question Text</Label>
-                    <Input
-                      id={`question-${question.id}`}
-                      placeholder="Enter your question"
-                      value={question.question}
-                      onChange={(e) => updateQuestion(question.id, "question", e.target.value)}
-                      required
-                    />
+                    <Input id={`question-${question.id}`} placeholder="Enter your question" value={question.question} onChange={(e) => updateQuestion(question.id, "question", e.target.value)} required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor={`type-${question.id}`}>Question Type</Label>
@@ -211,11 +187,7 @@ export default function CreateSurveyPage() {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <Switch
-                    id={`required-${question.id}`}
-                    checked={question.required}
-                    onCheckedChange={(checked) => updateQuestion(question.id, "required", checked)}
-                  />
+                  <Switch id={`required-${question.id}`} checked={question.required} onCheckedChange={(checked) => updateQuestion(question.id, "required", checked)} />
                   <Label htmlFor={`required-${question.id}`}>Required question</Label>
                 </div>
 
@@ -229,9 +201,7 @@ export default function CreateSurveyPage() {
                       </Button>
                     </div>
 
-                    {question.options.length === 0 && (
-                      <p className="text-sm text-muted-foreground">No options added yet. Add at least one option.</p>
-                    )}
+                    {question.options.length === 0 && <p className="text-sm text-muted-foreground">No options added yet. Add at least one option.</p>}
 
                     {question.options.map((option, optIndex) => (
                       <div key={option.id} className="flex items-center gap-2">
@@ -244,18 +214,8 @@ export default function CreateSurveyPage() {
                         ) : (
                           <div className="flex h-4 w-4 items-center justify-center rounded-sm border border-primary"></div>
                         )}
-                        <Input
-                          placeholder={`Option ${optIndex + 1}`}
-                          value={option.text}
-                          onChange={(e) => updateOption(question.id, option.id, e.target.value)}
-                          className="flex-1"
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeOption(question.id, option.id)}
-                        >
+                        <Input placeholder={`Option ${optIndex + 1}`} value={option.text} onChange={(e) => updateOption(question.id, option.id, e.target.value)} className="flex-1" />
+                        <Button type="button" variant="ghost" size="icon" onClick={() => removeOption(question.id, option.id)}>
                           <Trash2 className="h-4 w-4" />
                           <span className="sr-only">Remove option</span>
                         </Button>
@@ -291,5 +251,5 @@ export default function CreateSurveyPage() {
         </div>
       </form>
     </div>
-  )
+  );
 }
